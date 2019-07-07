@@ -15,7 +15,6 @@ class Game extends State<GameWrapper> {
         simulation.abstractSimulationExecutor
             .handleTap(details.globalPosition, _scrollController.offset);
       });
-
   }
 
   @override
@@ -35,6 +34,7 @@ class Game extends State<GameWrapper> {
       buildSlider(context),
       buildContainer()
     ];
+
     ListView listView = ListView.builder(
       controller: _scrollController,
       itemCount: widgets.length,

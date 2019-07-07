@@ -391,5 +391,6 @@ class DetailPage extends StatefulWidget {
   DetailPage(this.lesson, this._scrollController, this._gestureController);
 
   @override
-  HomePage createState() => HomePage(lesson, _scrollController, _gestureController);
+  HomePage createState() =>
+      HomePage(lesson, _scrollController, _gestureController);
 }
