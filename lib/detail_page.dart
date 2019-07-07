@@ -8,8 +8,10 @@ import 'model/lesson.dart';
 
 class HomePage extends State<DetailPage> {
   final Lesson lesson;
+  final ScrollController _scrollController;
+  final TapGestureRecognizer _gestureController;
 
-  HomePage(this.lesson);
+  HomePage(this.lesson, this._scrollController, this._gestureController);
 
   @override
   Widget build(BuildContext context) {
@@ -108,8 +110,10 @@ class HomePage extends State<DetailPage> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) =>
-                        GameWrapper(new SimulationAlgorithm(lesson), ScrollController(), TapGestureRecognizer())));
+                    builder: (context) => GameWrapper(
+                        new SimulationAlgorithm(lesson),
+                        _scrollController,
+                        _gestureController)));
           },
           color: Colors.green,
           child: Text("Visual demonstration",
@@ -381,9 +385,11 @@ class HomePage extends State<DetailPage> {
 
 class DetailPage extends StatefulWidget {
   final Lesson lesson;
+  final ScrollController _scrollController;
+  final TapGestureRecognizer _gestureController;
 
-  DetailPage(this.lesson);
+  DetailPage(this.lesson, this._scrollController, this._gestureController);
 
   @override
-  HomePage createState() => HomePage(lesson);
+  HomePage createState() => HomePage(lesson, _scrollController, _gestureController);
 }

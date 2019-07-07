@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import 'detail_page.dart';
@@ -8,6 +9,10 @@ void main() => runApp(new MyApp());
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
+  final _scrollController = ScrollController();
+  final _gestureController  = TapGestureRecognizer();
+
+
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
@@ -81,7 +86,7 @@ class _ListPageState extends State<ListPage> {
               Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
           onTap: () {
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => DetailPage(lesson)));
+                MaterialPageRoute(builder: (context) => DetailPage(lesson, ScrollController(), TapGestureRecognizer())));
           },
         );
 

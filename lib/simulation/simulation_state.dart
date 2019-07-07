@@ -15,6 +15,7 @@ class Game extends State<GameWrapper> {
         simulation.abstractSimulationExecutor
             .handleTap(details.globalPosition, _scrollController.offset);
       });
+
   }
 
   @override
@@ -147,5 +148,4 @@ class GameWrapper extends StatefulWidget {
 
   @override
   Game createState() => Game(simulation, _scrollController, _gestureController);
-
 }
