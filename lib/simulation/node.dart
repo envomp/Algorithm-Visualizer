@@ -6,6 +6,7 @@ import 'package:AlgorithmVisualizer/model/lesson.dart';
 import 'package:box2d_flame/box2d.dart';
 import 'package:flame/anchor.dart';
 import 'package:flame/components/component.dart';
+import 'package:flame/sprite.dart';
 
 const NODE_SIZE = 128.0;
 const DEGREE_TO_RADIAN = 57.29577957;
@@ -37,7 +38,8 @@ class Node extends SpriteComponent {
       ParagraphBuilder paragraph = new ParagraphBuilder(new ParagraphStyle());
       paragraph.pushStyle(new TextStyle(
           color: new Color(0xff000000),
-          fontSize: min(max(8, 10 + weight.abs() / 6 - lesson.nodes / 10), nodeSize/2)));
+          fontSize: min(max(8, 10 + weight.abs() / 6 - lesson.nodes / 10),
+              nodeSize / 2)));
       paragraph.addText(weight.floor().toString());
       nodeWeightText = paragraph.build()
         ..layout(new ParagraphConstraints(width: 180.0));
@@ -47,6 +49,18 @@ class Node extends SpriteComponent {
   @override
   void update(double t) {
     //this.angle += nodeSize / (PROPORTIONAL_ROTATION_RATE * DEGREE_TO_RADIAN);
+  }
+
+  void activate() {
+    sprite = new Sprite('nodeActive.png');
+  }
+
+  void deactivate() {
+    if (weight < 0) {
+      sprite = new Sprite('nodeNegative.png');
+    } else {
+      sprite = new Sprite('node.png');
+    }
   }
 }
 

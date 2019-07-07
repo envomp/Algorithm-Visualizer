@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:AlgorithmVisualizer/formulas.dart';
 import 'package:AlgorithmVisualizer/model/lesson.dart';
+import 'package:AlgorithmVisualizer/simulation/algorithms/graph/Graph.dart';
 import 'package:collection/collection.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
@@ -15,6 +16,8 @@ enum States { drawNodes, drawConnections, algorithm, finisher }
 
 class SimulationAlgorithm extends BaseGame {
   final Lesson lesson;
+  Object abstractSimulationExecutor;
+  ScrollController controller;
 
   // constants that are calculated from lesson
   double minWeight;
@@ -42,6 +45,19 @@ class SimulationAlgorithm extends BaseGame {
   double elapsedTime = 0;
 
   SimulationAlgorithm(this.lesson) {
+
+    switch (lesson.algorithmTemplate) {
+
+      case AlgorithmTemplate.graph:
+        abstractSimulationExecutor = new Graph(lesson);
+        break;
+      case AlgorithmTemplate.maze:
+        // TODO: Handle this case.
+        break;
+    }
+
+
+
     this.maxWeight = 99;
     if (askForInformation(
         lesson.additionalInformation, lesson.negativeWeights)) {
@@ -98,21 +114,51 @@ class SimulationAlgorithm extends BaseGame {
 
   @override
   void update(double t) {
-    for (int i = 0; i < speedFactor; i++) {
-      switch (state) {
-        case States.drawNodes:
-          nodeInitialization(t);
-          break;
-        case States.drawConnections:
-          pathInitialization(t);
-          break;
-        case States.algorithm:
-          // TODO: Handle this case.
-          break;
-        case States.finisher:
-          // TODO: Handle this case.
-          break;
-      }
+    switch (lesson.algorithmTemplate) {
+      case AlgorithmTemplate.graph:
+        for (int i = 0; i < speedFactor; i++) {
+          switch (state) {
+            case States.drawNodes:
+              nodeInitialization(t);
+              break;
+            case States.drawConnections:
+              pathInitialization(t);
+              break;
+            case States.algorithm:
+              switch (lesson.algorithmType) {
+                case AlgorithmType.pathFinding:
+                  if (root != null || destination != null) {
+                    switch (lesson.title) {
+                      case "Dijkstra's algorithm":
+                        break;
+                      case "A-star algorithm":
+                        break;
+                      case "Bellman–Ford algorithm":
+                        break;
+                      case "Floyd-Warshall algorithm":
+                        break;
+                      case "Johnson's algorithm":
+                        break;
+                    }
+                  }
+                  break;
+                case AlgorithmType.proofOfConcept:
+                  switch (lesson.title) {
+                    case "Four color theorem":
+                      break;
+                  }
+                  break;
+              }
+              break;
+            case States.finisher:
+            // TODO: Handle this case.
+              break;
+          }
+        }
+        break;
+      case AlgorithmTemplate.maze:
+        // TODO: Handle this case.
+        break;
     }
 
     nodes.forEach((x) {
@@ -151,7 +197,7 @@ class SimulationAlgorithm extends BaseGame {
       for (var i = 0; i < nodes.length; i++) {
         var existing = nodes[i];
         double d = pythagoreanTheorem(node, existing);
-        if (d < 2 * (maxNodeSize - minNodeSize)) {
+        if (d < 1.9 * (maxNodeSize - minNodeSize)) {
           overlapping = true;
           break;
         }
@@ -209,6 +255,8 @@ class SimulationAlgorithm extends BaseGame {
       }
     } else {
       state = States.algorithm;
+      root = null;
+      destination = null;
       elapsedTime = 0;
     }
   }
@@ -228,10 +276,8 @@ class SimulationAlgorithm extends BaseGame {
       root = notUsedNodes.removeAt(0);
       usedNodes.add(root);
     } else {
-      if (usedNodes.length > 5) {
-        usedNodes.removeAt(0);
-      }
-      root = usedNodes[rnd.nextInt(usedNodes.length)];
+      List temp = usedNodes.sublist(max(0, usedNodes.length - 10));
+      root = temp[rnd.nextInt(temp.length)];
     }
     destination = notUsedNodes[rnd.nextInt(notUsedNodes.length)];
     double closestDistance = pythagoreanTheorem(destination, root).abs();
@@ -246,7 +292,7 @@ class SimulationAlgorithm extends BaseGame {
       }
     }
 
-    if (closestDistance > 150) {
+    if (closestDistance > 250) {
       for (Node potentiallyClosest in usedNodes) {
         double tempAbs;
         tempAbs = pythagoreanTheorem(potentiallyClosest, destination).abs();
@@ -337,7 +383,47 @@ class SimulationAlgorithm extends BaseGame {
 
   handleDrag(Offset position) {}
 
-  handleTap(Offset globalPosition) {}
+  handleTap(Offset globalPosition) {
+    if (state == States.algorithm && (root == null || destination == null)) {
+      double paddingLeft = 30.0;
+      double paddingTop = 90.0;
+      if (root == null) {
+        for (Node node in nodes) {
+          if (pythagoreanTheoremAll(
+                  node.x,
+                  node.y,
+                  globalPosition.dx - paddingLeft,
+                  globalPosition.dy + controller.offset - paddingTop) <
+              minNodeSize) {
+            root = node;
+            root.activate();
+          }
+        }
+      } else {
+        if (pythagoreanTheoremAll(
+                root.x,
+                root.y,
+                globalPosition.dx - paddingLeft,
+                globalPosition.dy + controller.offset - paddingTop) <
+            minNodeSize) {
+          root.deactivate();
+          root = null;
+        } else {
+          for (Node node in nodes) {
+            if (pythagoreanTheoremAll(
+                    node.x,
+                    node.y,
+                    globalPosition.dx - paddingLeft,
+                    globalPosition.dy + controller.offset - paddingTop) <
+                minNodeSize) {
+              destination = node;
+              destination.activate();
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 // https://mathematica.stackexchange.com/questions/11632/how-to-generate-a-random-tree

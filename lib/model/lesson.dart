@@ -1,5 +1,15 @@
 import 'package:flutter/cupertino.dart';
 
+enum AlgorithmType {
+  pathFinding,
+  proofOfConcept
+}
+
+enum AlgorithmTemplate {
+  graph,
+  maze
+}
+
 class Lesson {
   // more information and bits where information is stored
   int additionalInformation;
@@ -14,7 +24,7 @@ class Lesson {
   final int weightsOnNodes = 2;
   final int weightsOnEdges = 4;
 
-  String title;
+  final String title;
   String level;
   double indicatorValue;
   String complexity;
@@ -22,6 +32,8 @@ class Lesson {
   Icon icon;
   String usages;
   String content;
+  AlgorithmType algorithmType;
+  AlgorithmTemplate algorithmTemplate;
 
   bool directed = true;
   double nodes = 2.0;
@@ -37,9 +49,12 @@ class Lesson {
       this.usages,
       this.simulationDetails,
       this.additionalInformation,
-      this.content});
+      this.content,
+      this.algorithmType,
+      this.algorithmTemplate});
 
   double getSortingOrder() {
     return indicatorValue;
   }
+
 }

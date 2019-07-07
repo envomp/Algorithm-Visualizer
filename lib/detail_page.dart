@@ -114,33 +114,36 @@ class HomePage extends State<DetailPage> {
               style: TextStyle(color: Colors.white)),
         ));
 
-    final directedSwitch =
-        askForInformation(lesson.simulationDetails, lesson.askForDirection)
-            ? Container(
-                padding: EdgeInsets.fromLTRB(10.0, 32.0, 0.0, 0.0),
-                width: MediaQuery.of(context).size.width,
-                child: Row(
-                  children: <Widget>[
-                    Text(getDirectedMessage(),
-                        style: TextStyle(color: Colors.black)),
-                    Switch(
-                      value: lesson.directed,
-                      onChanged: (value) {
-                        setState(() {
-                          lesson.directed = value;
-                          minMaxEdges();
-                        });
-                      },
-                      activeTrackColor: Colors.lightGreenAccent,
-                      activeColor: Colors.green,
-                    ),
-                  ],
+    final directedSwitch = lesson.algorithmTemplate ==
+                AlgorithmTemplate.graph &&
+            askForInformation(lesson.simulationDetails, lesson.askForDirection)
+        ? Container(
+            padding: EdgeInsets.fromLTRB(10.0, 32.0, 0.0, 0.0),
+            width: MediaQuery.of(context).size.width,
+            child: Row(
+              children: <Widget>[
+                Text(getDirectedMessage(),
+                    style: TextStyle(color: Colors.black)),
+                Switch(
+                  value: lesson.directed,
+                  onChanged: (value) {
+                    setState(() {
+                      lesson.directed = value;
+                      minMaxEdges();
+                    });
+                  },
+                  activeTrackColor: Colors.lightGreenAccent,
+                  activeColor: Colors.green,
                 ),
-              )
-            : Container();
+              ],
+            ),
+          )
+        : Container();
 
     final weightedEdgesSwitch =
-        askForInformation(lesson.additionalInformation, lesson.weightLocation)
+        lesson.algorithmTemplate == AlgorithmTemplate.graph &&
+                askForInformation(
+                    lesson.additionalInformation, lesson.weightLocation)
             ? Container(
                 padding: EdgeInsets.fromLTRB(10.0, 32.0, 0.0, 0.0),
                 width: MediaQuery.of(context).size.width,
@@ -168,6 +171,7 @@ class HomePage extends State<DetailPage> {
             : Container();
 
     final weightedNotification = !askForEdgeInformation() &&
+            lesson.algorithmTemplate == AlgorithmTemplate.graph &&
             !askForNodeInformation() &&
             askForInformation(
                 lesson.additionalInformation, lesson.weightLocation)
@@ -179,7 +183,9 @@ class HomePage extends State<DetailPage> {
         : Container();
 
     final weightedNodeSwitch =
-        askForInformation(lesson.additionalInformation, lesson.weightLocation)
+        lesson.algorithmTemplate == AlgorithmTemplate.graph &&
+                askForInformation(
+                    lesson.additionalInformation, lesson.weightLocation)
             ? Container(
                 padding: EdgeInsets.fromLTRB(10.0, 32.0, 0.0, 0.0),
                 width: MediaQuery.of(context).size.width,
@@ -206,18 +212,20 @@ class HomePage extends State<DetailPage> {
               )
             : Container();
 
-    final numberOfNodesText =
-        askForInformation(lesson.simulationDetails, lesson.askForNodes)
-            ? Container(
-                padding: EdgeInsets.fromLTRB(10.0, 32.0, 0.0, 0.0),
-                width: MediaQuery.of(context).size.width,
-                child: Text("Number of nodes:",
-                    style: TextStyle(color: Colors.black)),
-              )
-            : Container();
+    final numberOfNodesText = lesson.algorithmTemplate ==
+                AlgorithmTemplate.graph &&
+            askForInformation(lesson.simulationDetails, lesson.askForNodes)
+        ? Container(
+            padding: EdgeInsets.fromLTRB(10.0, 32.0, 0.0, 0.0),
+            width: MediaQuery.of(context).size.width,
+            child:
+                Text("Number of nodes:", style: TextStyle(color: Colors.black)),
+          )
+        : Container();
 
     final numberOfNodesSlider =
-        askForInformation(lesson.simulationDetails, lesson.askForNodes)
+        lesson.algorithmTemplate == AlgorithmTemplate.graph &&
+                askForInformation(lesson.simulationDetails, lesson.askForNodes)
             ? Container(
                 padding: EdgeInsets.symmetric(vertical: 16.0),
                 width: MediaQuery.of(context).size.width,
@@ -248,18 +256,20 @@ class HomePage extends State<DetailPage> {
                 ))
             : Container();
 
-    final numberOfEdgesText =
-        askForInformation(lesson.simulationDetails, lesson.askForEdges)
-            ? Container(
-                padding: EdgeInsets.fromLTRB(10.0, 32.0, 0.0, 0.0),
-                width: MediaQuery.of(context).size.width,
-                child: Text(getEdgesMessage(),
-                    style: TextStyle(color: Colors.black)),
-              )
-            : Container();
+    final numberOfEdgesText = lesson.algorithmTemplate ==
+                AlgorithmTemplate.graph &&
+            askForInformation(lesson.simulationDetails, lesson.askForEdges)
+        ? Container(
+            padding: EdgeInsets.fromLTRB(10.0, 32.0, 0.0, 0.0),
+            width: MediaQuery.of(context).size.width,
+            child:
+                Text(getEdgesMessage(), style: TextStyle(color: Colors.black)),
+          )
+        : Container();
 
     final numberOfEdgesSlider =
-        askForInformation(lesson.simulationDetails, lesson.askForEdges)
+        lesson.algorithmTemplate == AlgorithmTemplate.graph &&
+                askForInformation(lesson.simulationDetails, lesson.askForEdges)
             ? Container(
                 padding: EdgeInsets.symmetric(vertical: 16.0),
                 width: MediaQuery.of(context).size.width,

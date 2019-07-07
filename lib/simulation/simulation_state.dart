@@ -3,7 +3,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Game extends State<GameWrapper> {
-  final SimulationAlgorithm simulation;
+  SimulationAlgorithm simulation;
+  ScrollController _controller;
+
+  @override
+  void initState() {
+    _controller = ScrollController();
+    super.initState();
+  }
 
   Game(this.simulation);
 
@@ -11,14 +18,39 @@ class Game extends State<GameWrapper> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: ListView(children: <Widget>[
-          Container(
-            padding: EdgeInsets.fromLTRB(30.0, 24.0, 30.0, 24.0),
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height - 100,
-            child: simulation.widget,
-          ),
-          Column(
+        child: buildListView(context),
+      ),
+    );
+  }
+
+  ListView buildListView(BuildContext context) {
+    List<Widget> widgets = <Widget>[
+      buildAppBar(context),
+      BuildDivider(context),
+      buildSimulator(context),
+      buildSlider(context),
+      buildContainer()
+    ];
+    ListView listView = ListView.builder(
+      controller: _controller,
+      itemCount: widgets.length,
+      itemBuilder: (BuildContext context, int index) {
+        return widgets[index];
+      },
+    );
+    simulation.controller = listView.controller;
+    print(simulation.controller);
+    return listView;
+  }
+
+  Container buildContainer() {
+    return Container(
+            height: 1000,
+          );
+  }
+
+  Column buildSlider(BuildContext context) {
+    return Column(
             children: <Widget>[
               Container(
                 alignment: Alignment.topLeft,
@@ -58,10 +90,48 @@ class Game extends State<GameWrapper> {
                     ],
                   ))
             ],
-          ),
-        ]),
-      ),
-    );
+          );
+  }
+
+  Container buildSimulator(BuildContext context) {
+    return Container(
+            padding: EdgeInsets.fromLTRB(30.0, 24.0, 30.0, 24.0),
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height - 124,
+            child: simulation.widget,
+          );
+  }
+
+  Container BuildDivider(BuildContext context) {
+    return Container(
+            width: 90.0,
+            padding: EdgeInsets.fromLTRB(
+                24, 0, MediaQuery.of(context).size.width - 48 - 90, 0),
+            alignment: Alignment.centerLeft,
+            child: new Divider(color: Colors.green),
+          );
+  }
+
+  Row buildAppBar(BuildContext context) {
+    return Row(
+            children: <Widget>[
+              SizedBox(
+                width: 24,
+                height: 24,
+              ),
+              Container(
+                width: 10,
+                alignment: Alignment.topLeft,
+                child: InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child:
+                      Icon(Icons.arrow_back, color: Colors.black, size: 24),
+                ),
+              )
+            ],
+          );
   }
 }
 
