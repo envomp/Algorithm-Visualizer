@@ -115,35 +115,33 @@ class HomePage extends State<DetailPage> {
         ));
 
     final directedSwitch = lesson.algorithmTemplate ==
-                AlgorithmTemplate.graph &&
-            askForInformation(lesson.simulationDetails, lesson.askForDirection)
-        ? Container(
-            padding: EdgeInsets.fromLTRB(10.0, 32.0, 0.0, 0.0),
-            width: MediaQuery.of(context).size.width,
-            child: Row(
-              children: <Widget>[
-                Text(getDirectedMessage(),
-                    style: TextStyle(color: Colors.black)),
-                Switch(
-                  value: lesson.directed,
-                  onChanged: (value) {
-                    setState(() {
-                      lesson.directed = value;
-                      minMaxEdges();
-                    });
-                  },
-                  activeTrackColor: Colors.lightGreenAccent,
-                  activeColor: Colors.green,
+        AlgorithmTemplate.graph &&
+        askForInformation(lesson.simulationDetails, lesson.askForDirection)
+            ? Container(
+                padding: EdgeInsets.fromLTRB(10.0, 32.0, 0.0, 0.0),
+                width: MediaQuery.of(context).size.width,
+                child: Row(
+                  children: <Widget>[
+                    Text(getDirectedMessage(),
+                        style: TextStyle(color: Colors.black)),
+                    Switch(
+                      value: lesson.directed,
+                      onChanged: (value) {
+                        setState(() {
+                          lesson.directed = value;
+                          minMaxEdges();
+                        });
+                      },
+                      activeTrackColor: Colors.lightGreenAccent,
+                      activeColor: Colors.green,
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          )
-        : Container();
+              )
+            : Container();
 
-    final weightedEdgesSwitch =
-        lesson.algorithmTemplate == AlgorithmTemplate.graph &&
-                askForInformation(
-                    lesson.additionalInformation, lesson.weightLocation)
+    final weightedEdgesSwitch = lesson.algorithmTemplate == AlgorithmTemplate.graph &&
+        askForInformation(lesson.additionalInformation, lesson.weightLocation)
             ? Container(
                 padding: EdgeInsets.fromLTRB(10.0, 32.0, 0.0, 0.0),
                 width: MediaQuery.of(context).size.width,
@@ -170,8 +168,7 @@ class HomePage extends State<DetailPage> {
               )
             : Container();
 
-    final weightedNotification = !askForEdgeInformation() &&
-            lesson.algorithmTemplate == AlgorithmTemplate.graph &&
+    final weightedNotification = !askForEdgeInformation() && lesson.algorithmTemplate == AlgorithmTemplate.graph &&
             !askForNodeInformation() &&
             askForInformation(
                 lesson.additionalInformation, lesson.weightLocation)
@@ -182,10 +179,8 @@ class HomePage extends State<DetailPage> {
                 style: TextStyle(color: Colors.black)))
         : Container();
 
-    final weightedNodeSwitch =
-        lesson.algorithmTemplate == AlgorithmTemplate.graph &&
-                askForInformation(
-                    lesson.additionalInformation, lesson.weightLocation)
+    final weightedNodeSwitch = lesson.algorithmTemplate == AlgorithmTemplate.graph &&
+        askForInformation(lesson.additionalInformation, lesson.weightLocation)
             ? Container(
                 padding: EdgeInsets.fromLTRB(10.0, 32.0, 0.0, 0.0),
                 width: MediaQuery.of(context).size.width,
@@ -212,20 +207,18 @@ class HomePage extends State<DetailPage> {
               )
             : Container();
 
-    final numberOfNodesText = lesson.algorithmTemplate ==
-                AlgorithmTemplate.graph &&
-            askForInformation(lesson.simulationDetails, lesson.askForNodes)
-        ? Container(
-            padding: EdgeInsets.fromLTRB(10.0, 32.0, 0.0, 0.0),
-            width: MediaQuery.of(context).size.width,
-            child:
-                Text("Number of nodes:", style: TextStyle(color: Colors.black)),
-          )
-        : Container();
+    final numberOfNodesText = lesson.algorithmTemplate == AlgorithmTemplate.graph &&
+        askForInformation(lesson.simulationDetails, lesson.askForNodes)
+            ? Container(
+                padding: EdgeInsets.fromLTRB(10.0, 32.0, 0.0, 0.0),
+                width: MediaQuery.of(context).size.width,
+                child: Text("Number of nodes:",
+                    style: TextStyle(color: Colors.black)),
+              )
+            : Container();
 
-    final numberOfNodesSlider =
-        lesson.algorithmTemplate == AlgorithmTemplate.graph &&
-                askForInformation(lesson.simulationDetails, lesson.askForNodes)
+    final numberOfNodesSlider = lesson.algorithmTemplate == AlgorithmTemplate.graph &&
+        askForInformation(lesson.simulationDetails, lesson.askForNodes)
             ? Container(
                 padding: EdgeInsets.symmetric(vertical: 16.0),
                 width: MediaQuery.of(context).size.width,
@@ -267,9 +260,9 @@ class HomePage extends State<DetailPage> {
           )
         : Container();
 
-    final numberOfEdgesSlider =
-        lesson.algorithmTemplate == AlgorithmTemplate.graph &&
-                askForInformation(lesson.simulationDetails, lesson.askForEdges)
+    final numberOfEdgesSlider =lesson.algorithmTemplate ==
+        AlgorithmTemplate.graph &&
+        askForInformation(lesson.simulationDetails, lesson.askForEdges)
             ? Container(
                 padding: EdgeInsets.symmetric(vertical: 16.0),
                 width: MediaQuery.of(context).size.width,

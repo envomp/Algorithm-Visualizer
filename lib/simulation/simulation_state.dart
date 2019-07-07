@@ -26,7 +26,7 @@ class Game extends State<GameWrapper> {
   ListView buildListView(BuildContext context) {
     List<Widget> widgets = <Widget>[
       buildAppBar(context),
-      BuildDivider(context),
+      buildDivider(context),
       buildSimulator(context),
       buildSlider(context),
       buildContainer()
@@ -38,8 +38,7 @@ class Game extends State<GameWrapper> {
         return widgets[index];
       },
     );
-    simulation.controller = listView.controller;
-    print(simulation.controller);
+    simulation.controller = _controller;
     return listView;
   }
 
@@ -76,15 +75,15 @@ class Game extends State<GameWrapper> {
                           divisions: 100,
                           onChanged: (value) {
                             setState(
-                                () => simulation.speedFactor = value.floor());
+                                () => simulation.abstractSimulationExecutor.speedFactor = value.floor());
                           },
-                          value: simulation.speedFactor.floorToDouble(),
+                          value: simulation.abstractSimulationExecutor.speedFactor.floorToDouble(),
                         ),
                       ),
                       Container(
                         width: 60.0,
                         alignment: Alignment.centerLeft,
-                        child: Text('${simulation.speedFactor}',
+                        child: Text('${simulation.abstractSimulationExecutor.speedFactor}',
                             style: Theme.of(context).textTheme.display1),
                       ),
                     ],
@@ -102,7 +101,7 @@ class Game extends State<GameWrapper> {
           );
   }
 
-  Container BuildDivider(BuildContext context) {
+  Container buildDivider(BuildContext context) {
     return Container(
             width: 90.0,
             padding: EdgeInsets.fromLTRB(
