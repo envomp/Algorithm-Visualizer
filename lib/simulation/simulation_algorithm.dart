@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:AlgorithmVisualizer/model/lesson.dart';
-import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -27,20 +26,6 @@ class SimulationAlgorithm extends BaseGame {
         // TODO: Handle this case.
         break;
     }
-
-    Flame.util.addGestureRecognizer(createDragRecognizer());
-    Flame.util.addGestureRecognizer(createTapRecognizer());
-  }
-
-  GestureRecognizer createDragRecognizer() {
-    return new ImmediateMultiDragGestureRecognizer()
-      ..onStart = (Offset position) => this.handleDrag(position);
-  }
-
-  TapGestureRecognizer createTapRecognizer() {
-    return new TapGestureRecognizer()
-      ..onTapUp =
-          (TapUpDetails details) => this.handleTap(details.globalPosition);
   }
 
   @override
@@ -53,19 +38,6 @@ class SimulationAlgorithm extends BaseGame {
     switch (lesson.algorithmTemplate) {
       case AlgorithmTemplate.graph:
         abstractSimulationExecutor.update(t, size);
-        break;
-      case AlgorithmTemplate.maze:
-        // TODO: Handle this case.
-        break;
-    }
-  }
-
-  handleDrag(Offset position) {}
-
-  handleTap(Offset globalPosition) {
-    switch (lesson.algorithmTemplate) {
-      case AlgorithmTemplate.graph:
-        abstractSimulationExecutor.handleTap(globalPosition, controller.offset);
         break;
       case AlgorithmTemplate.maze:
         // TODO: Handle this case.

@@ -129,6 +129,9 @@ class Graph implements TemplateSimulationExecutor {
 
   @override
   handleTap(Offset globalPosition, double offset) {
+    print(globalPosition.dx);
+    print(globalPosition.dy);
+    print(offset);
     if (state == States.algorithm && (root == null || destination == null)) {
       double paddingLeft = 30.0;
       double paddingTop = 90.0;
