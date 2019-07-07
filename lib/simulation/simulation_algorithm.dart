@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:AlgorithmVisualizer/model/lesson.dart';
 import 'package:flame/game.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import 'algorithms/templateGenerator/Graph.dart';
