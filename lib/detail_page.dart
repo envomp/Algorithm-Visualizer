@@ -2,16 +2,15 @@ import 'dart:math';
 import 'package:AlgorithmVisualizer/formulas.dart';
 import 'package:AlgorithmVisualizer/simulation/simulation_algorithm.dart';
 import 'package:AlgorithmVisualizer/simulation/simulation_state.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'controllers/Controllers.dart';
 import 'model/lesson.dart';
 
 class HomePage extends State<DetailPage> {
   final Lesson lesson;
-  final ScrollController _scrollController;
-  final TapGestureRecognizer _gestureController;
+  final Controllers _controllers;
 
-  HomePage(this.lesson, this._scrollController, this._gestureController);
+  HomePage(this.lesson, this._controllers);
 
   @override
   Widget build(BuildContext context) {
@@ -111,9 +110,7 @@ class HomePage extends State<DetailPage> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => GameWrapper(
-                        new SimulationAlgorithm(lesson),
-                        _scrollController,
-                        _gestureController)));
+                        new SimulationAlgorithm(lesson), _controllers)));
           },
           color: Colors.green,
           child: Text("Visual demonstration",
@@ -385,12 +382,10 @@ class HomePage extends State<DetailPage> {
 
 class DetailPage extends StatefulWidget {
   final Lesson lesson;
-  final ScrollController _scrollController;
-  final TapGestureRecognizer _gestureController;
+  final Controllers _controllers;
 
-  DetailPage(this.lesson, this._scrollController, this._gestureController);
+  DetailPage(this.lesson, this._controllers);
 
   @override
-  HomePage createState() =>
-      HomePage(lesson, _scrollController, _gestureController);
+  HomePage createState() => HomePage(lesson, _controllers);
 }

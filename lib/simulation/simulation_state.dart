@@ -1,3 +1,4 @@
+import 'package:AlgorithmVisualizer/controllers/Controllers.dart';
 import 'package:AlgorithmVisualizer/simulation/simulation_algorithm.dart';
 import 'package:flame/flame.dart';
 import 'package:flutter/cupertino.dart';
@@ -6,14 +7,18 @@ import 'package:flutter/material.dart';
 
 class Game extends State<GameWrapper> {
   final SimulationAlgorithm simulation;
-  ScrollController _scrollController;
-  TapGestureRecognizer _gestureController;
+  final Controllers _controllers;
 
-  Game(this.simulation, this._scrollController, this._gestureController) {
-    Flame.util.addGestureRecognizer(_gestureController
+  Game(this.simulation, this._controllers) {
+    Flame.util.addGestureRecognizer(_controllers.gestureController
       ..onTapUp = (TapUpDetails details) {
-        simulation.abstractSimulationExecutor
-            .handleTap(details.globalPosition, _scrollController.offset);
+        try {
+          simulation.abstractSimulationExecutor.handleTap(
+              details.globalPosition, _controllers.scrollController.offset);
+        } catch (Exception) {
+          simulation.abstractSimulationExecutor
+              .handleTap(details.globalPosition, 0);
+        }
       });
   }
 
@@ -36,13 +41,13 @@ class Game extends State<GameWrapper> {
     ];
 
     ListView listView = ListView.builder(
-      controller: _scrollController,
+      controller: _controllers.scrollController,
       itemCount: widgets.length,
       itemBuilder: (BuildContext context, int index) {
         return widgets[index];
       },
     );
-    simulation.controller = _scrollController;
+    simulation.controller = _controllers.scrollController;
     return listView;
   }
 
@@ -141,11 +146,10 @@ class Game extends State<GameWrapper> {
 
 class GameWrapper extends StatefulWidget {
   final SimulationAlgorithm simulation;
-  final ScrollController _scrollController;
-  final TapGestureRecognizer _gestureController;
+  final Controllers _controllers;
 
-  GameWrapper(this.simulation, this._scrollController, this._gestureController);
+  GameWrapper(this.simulation, this._controllers);
 
   @override
-  Game createState() => Game(simulation, _scrollController, _gestureController);
+  Game createState() => Game(simulation, _controllers);
 }

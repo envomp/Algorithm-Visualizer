@@ -1,5 +1,5 @@
+import 'package:AlgorithmVisualizer/controllers/Controllers.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import 'detail_page.dart';
@@ -9,8 +9,7 @@ void main() => runApp(new MyApp());
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
-  final _scrollController = ScrollController();
-  final _gestureController = TapGestureRecognizer();
+  final Controllers _controllers = Controllers();
 
   @override
   Widget build(BuildContext context) {
@@ -19,33 +18,29 @@ class MyApp extends StatelessWidget {
       theme: new ThemeData(
           primaryColor: Color.fromRGBO(58, 66, 86, 1.0), fontFamily: 'Raleway'),
       home: new ListPage(
-          title: 'Lessons',
-          scrollController: _scrollController,
-          gestureController: _gestureController),
+        title: 'Lessons',
+        controllers: _controllers,
+      ),
       // home: DetailPage(),
     );
   }
 }
 
 class ListPage extends StatefulWidget {
-  ListPage({Key key, this.title, this.scrollController, this.gestureController})
-      : super(key: key);
+  ListPage({Key key, this.title, this.controllers}) : super(key: key);
 
   final String title;
-  final scrollController;
-  final gestureController;
+  final Controllers controllers;
 
   @override
-  _ListPageState createState() =>
-      _ListPageState(scrollController, gestureController);
+  _ListPageState createState() => _ListPageState(controllers);
 }
 
 class _ListPageState extends State<ListPage> {
-  final _scrollController;
-  final _gestureController;
+  final Controllers _controllers;
   List lessons;
 
-  _ListPageState(this._scrollController, this._gestureController);
+  _ListPageState(this._controllers);
 
   @override
   void initState() {
@@ -98,8 +93,7 @@ class _ListPageState extends State<ListPage> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => DetailPage(
-                        lesson, _scrollController, _gestureController)));
+                    builder: (context) => DetailPage(lesson, _controllers)));
           },
         );
 
