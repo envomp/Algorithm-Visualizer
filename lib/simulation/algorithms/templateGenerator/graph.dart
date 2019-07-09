@@ -69,7 +69,7 @@ class Graph implements TemplateSimulationExecutor {
           lesson.additionalInformation, lesson.weightsOnNodes)) {
         canvas.drawParagraph(
             x.nodeWeightText,
-            new Offset((x.nodeSize - x.nodeWeightText.tightWidth) / 2,
+            new Offset((x.nodeSize - x.nodeWeightText.minIntrinsicWidth) / 2,
                 (x.nodeSize - x.nodeWeightText.height) / 2));
       }
       canvas.restore();
