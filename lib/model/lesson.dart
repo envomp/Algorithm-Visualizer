@@ -1,14 +1,39 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
-enum AlgorithmType {
-  pathFinding,
-  proofOfConcept
+enum AlgorithmType { all, pathFinding, proofOfConcept }
+
+class AlgorithmIcon {
+  static IconData getAlgorithmIcon(AlgorithmType algo) {
+    switch (algo) {
+      case AlgorithmType.all:
+        return Icons.all_inclusive;
+      case AlgorithmType.pathFinding:
+        return Icons.gps_fixed;
+      case AlgorithmType.proofOfConcept:
+        return Icons.work;
+    }
+    return Icons.add;
+  }
 }
 
-enum AlgorithmTemplate {
-  graph,
-  maze
+class AlgorithmToString {
+  static String getAlgorithmToString(int algo) {
+    switch (algo) {
+      case 0:
+        return 'All algorithms';
+      case 1:
+        return 'Pathfinding algorithms';
+        break;
+      case 2:
+        return 'Proof of concept algorithms';
+        break;
+    }
+    return 'Hi mom!';
+  }
 }
+
+enum AlgorithmTemplate { graph, maze }
 
 class Lesson {
   // more information and bits where information is stored
@@ -56,5 +81,4 @@ class Lesson {
   double getSortingOrder() {
     return indicatorValue;
   }
-
 }

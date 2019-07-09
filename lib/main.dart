@@ -1,7 +1,6 @@
 import 'package:AlgorithmVisualizer/controllers/Controllers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'detail_page.dart';
 import 'model/lesson.dart';
 
@@ -16,9 +15,12 @@ class MyApp extends StatelessWidget {
     return new MaterialApp(
       title: 'Flutter Demo',
       theme: new ThemeData(
-          primaryColor: Color.fromRGBO(58, 66, 86, 1.0), fontFamily: 'Raleway'),
+        primaryColor: Color.fromRGBO(58, 66, 86, 1.0),
+        fontFamily: 'Raleway',
+        primaryColorBrightness: Brightness.dark,
+      ),
+
       home: new ListPage(
-        title: 'Lessons',
         controllers: _controllers,
       ),
       // home: DetailPage(),
@@ -27,9 +29,8 @@ class MyApp extends StatelessWidget {
 }
 
 class ListPage extends StatefulWidget {
-  ListPage({Key key, this.title, this.controllers}) : super(key: key);
+  ListPage({Key key, this.controllers}) : super(key: key);
 
-  final String title;
   final Controllers controllers;
 
   @override
@@ -38,16 +39,9 @@ class ListPage extends StatefulWidget {
 
 class _ListPageState extends State<ListPage> {
   final Controllers _controllers;
-  List lessons;
+  int activePage = 0;
 
   _ListPageState(this._controllers);
-
-  @override
-  void initState() {
-    lessons = getLessons();
-    lessons.sort((a, b) => a.getSortingOrder().compareTo(b.getSortingOrder()));
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -107,48 +101,48 @@ class _ListPageState extends State<ListPage> {
         );
 
     final makeBody = Container(
-      decoration: BoxDecoration(color: Color.fromRGBO(58, 66, 86, 1.0)),
-      child: ListView.builder(
-        scrollDirection: Axis.vertical,
-        shrinkWrap: true,
-        itemCount: lessons.length,
-        itemBuilder: (BuildContext context, int index) {
-          return makeCard(lessons[index]);
-        },
-      ),
-    );
+        decoration: BoxDecoration(color: Color.fromRGBO(58, 66, 86, 1.0)),
+        child: PageView(
+          controller: _controllers.pageController,
+          physics: AlwaysScrollableScrollPhysics(),
+          pageSnapping: true,
+          scrollDirection: Axis.horizontal,
+          onPageChanged: (int newPage) {
+            setState(() {
+              activePage = newPage;
+            });
+          },
+          children: createChildren(makeCard),
+        ));
 
     final makeBottom = Container(
       height: 55.0,
       child: BottomAppBar(
         color: Color.fromRGBO(58, 66, 86, 1.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            IconButton(
-              icon: Icon(Icons.home, color: Colors.white),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: Icon(Icons.blur_on, color: Colors.white),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: Icon(Icons.hotel, color: Colors.white),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: Icon(Icons.account_box, color: Colors.white),
-              onPressed: () {},
-            )
-          ],
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          shrinkWrap: true,
+          itemCount: AlgorithmType.values.length,
+          itemBuilder: (BuildContext context, int index) {
+            return IconButton(
+              icon: Icon(
+                  AlgorithmIcon.getAlgorithmIcon(AlgorithmType.values[index]),
+                  color: activePage == index ? Colors.green : Colors.white),
+              onPressed: () {
+                setState(() {
+                  activePage = index;
+                  _controllers.pageController.jumpToPage(index);
+                });
+              },
+            );
+          },
         ),
       ),
     );
     final topAppBar = AppBar(
       elevation: 0.1,
       backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
-      title: Text(widget.title),
+      title: Text(AlgorithmToString.getAlgorithmToString(activePage)),
       actions: <Widget>[
         IconButton(
           icon: Icon(Icons.list),
@@ -164,9 +158,36 @@ class _ListPageState extends State<ListPage> {
       bottomNavigationBar: makeBottom,
     );
   }
+
+  List<Widget> createChildren(Card makeCard(Lesson lesson)) {
+    List<Widget> widgets = [];
+    for (int i = 0; i < AlgorithmType.values.length; i++) {
+      widgets.add(buildListView(makeCard, i));
+    }
+    return widgets;
+  }
+
+  ListView buildListView(Card makeCard(Lesson lesson), int index) {
+    List<Lesson> listLessons = getLessons();
+    listLessons
+        .sort((a, b) => a.getSortingOrder().compareTo(b.getSortingOrder()));
+    if (index != 0) {
+      listLessons = listLessons
+          .where((f) => f.algorithmType == AlgorithmType.values[index])
+          .toList();
+    }
+    return ListView.builder(
+      scrollDirection: Axis.vertical,
+      shrinkWrap: true,
+      itemCount: listLessons.length,
+      itemBuilder: (BuildContext context, int listIndex) {
+        return makeCard(listLessons[listIndex]);
+      },
+    );
+  }
 }
 
-List getLessons() => [
+List<Lesson> getLessons() => [
       Lesson(
           title: "Dijkstra's algorithm",
           level: "Basic",

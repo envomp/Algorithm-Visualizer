@@ -111,6 +111,9 @@ class Graph implements TemplateSimulationExecutor {
                   break;
               }
               break;
+            case AlgorithmType.all:
+              //it should never get here
+              break;
           }
           break;
         case States.finisher:
