@@ -1,6 +1,7 @@
 import 'package:AlgorithmVisualizer/controllers/Controllers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import 'detail_page.dart';
 import 'model/lesson.dart';
 
@@ -147,7 +148,7 @@ class _ListPageState extends State<ListPage> {
         IconButton(
           icon: Icon(Icons.list),
           onPressed: () {},
-        )
+        ),
       ],
     );
 
