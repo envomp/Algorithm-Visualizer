@@ -4,8 +4,8 @@ import 'package:AlgorithmVisualizer/model/lesson.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 
-import 'algorithms/templateGenerator/Graph.dart';
-import 'algorithms/templateGenerator/template_simulation_executor.dart';
+import 'templateGenerator/Graph.dart';
+import 'templateGenerator/template_simulation_executor.dart';
 
 final Random rnd = new Random();
 enum States { drawNodes, drawConnections, algorithm, finisher }

@@ -48,6 +48,8 @@ class Lesson {
   final int weightLocation = 1;
   final int weightsOnNodes = 2;
   final int weightsOnEdges = 4;
+  final int directed = 8;
+  final int stepByStep = 16;
 
   final String title;
   String level;
@@ -60,7 +62,6 @@ class Lesson {
   AlgorithmType algorithmType;
   AlgorithmTemplate algorithmTemplate;
 
-  bool directed = true;
   double nodes = 2.0;
   double edges = 1.0;
 

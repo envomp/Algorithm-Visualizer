@@ -1,8 +1,10 @@
 import 'dart:math';
+
 import 'package:AlgorithmVisualizer/formulas.dart';
 import 'package:AlgorithmVisualizer/simulation/simulation_algorithm.dart';
 import 'package:AlgorithmVisualizer/simulation/simulation_state.dart';
 import 'package:flutter/material.dart';
+
 import 'controllers/Controllers.dart';
 import 'model/lesson.dart';
 
@@ -124,14 +126,16 @@ class HomePage extends State<DetailPage> {
             padding: EdgeInsets.fromLTRB(10.0, 32.0, 0.0, 0.0),
             width: MediaQuery.of(context).size.width,
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Text(getDirectedMessage(),
                     style: TextStyle(color: Colors.black)),
                 Switch(
-                  value: lesson.directed,
+                  value: askForInformation(
+                      lesson.simulationDetails, lesson.directed),
                   onChanged: (value) {
                     setState(() {
-                      lesson.directed = value;
+                      changeSimulationDetails(lesson.directed);
                       minMaxEdges();
                     });
                   },
@@ -151,6 +155,7 @@ class HomePage extends State<DetailPage> {
                 padding: EdgeInsets.fromLTRB(10.0, 32.0, 0.0, 0.0),
                 width: MediaQuery.of(context).size.width,
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Text(getWeightedEdgeMessage(),
                         style: TextStyle(color: Colors.black)),
@@ -193,6 +198,7 @@ class HomePage extends State<DetailPage> {
                 padding: EdgeInsets.fromLTRB(10.0, 32.0, 0.0, 0.0),
                 width: MediaQuery.of(context).size.width,
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Text(getWeightedNodeMessage(),
                         style: TextStyle(color: Colors.black)),
@@ -301,6 +307,36 @@ class HomePage extends State<DetailPage> {
                 ))
             : Container();
 
+    final simulationStepSwitch =
+    lesson.algorithmTemplate == AlgorithmTemplate.graph
+        ? Container(
+        padding: EdgeInsets.symmetric(vertical: 16.0),
+        width: MediaQuery
+            .of(context)
+            .size
+            .width,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Container(
+              child: Text(getStepMessage(),
+                  style: TextStyle(color: Colors.black)),
+            ),
+            Switch(
+              value: askForInformation(
+                  lesson.simulationDetails, lesson.stepByStep),
+              onChanged: (value) {
+                setState(() {
+                  changeSimulationDetails(lesson.stepByStep);
+                });
+              },
+              activeTrackColor: Colors.lightGreenAccent,
+              activeColor: Colors.green,
+            ),
+          ],
+        ))
+        : Container();
+
     final bottomContent = Container(
       width: MediaQuery.of(context).size.width,
       padding: EdgeInsets.all(30.0),
@@ -316,6 +352,7 @@ class HomePage extends State<DetailPage> {
             numberOfNodesSlider,
             numberOfEdgesText,
             numberOfEdgesSlider,
+            simulationStepSwitch,
             readButton
           ],
         ),
@@ -333,13 +370,35 @@ class HomePage extends State<DetailPage> {
     );
   }
 
+  void changeSimulationDetails(int whatToChange) {
+    if (askForInformation(lesson.simulationDetails, whatToChange)) {
+      lesson.simulationDetails -= whatToChange;
+    } else {
+      lesson.simulationDetails += whatToChange;
+    }
+  }
+
+  void changeAdditionalInformation(int whatToChange) {
+    if (askForInformation(lesson.additionalInformation, whatToChange)) {
+      lesson.additionalInformation -= whatToChange;
+    } else {
+      lesson.additionalInformation += whatToChange;
+    }
+  }
+
+  String getStepMessage() {
+    return ((askForInformation(lesson.simulationDetails, lesson.stepByStep))
+        ? "Step by step simulation: "
+        : "All in one go Simulation: ");
+  }
+
   String getEdgesMessage() {
     return "Number of edges:" +
         ((lesson.edges == minEdges()) ? "\t(min edges => always a tree)" : "");
   }
 
   String getDirectedMessage() {
-    if (lesson.directed) {
+    if (askForInformation(lesson.simulationDetails, lesson.directed)) {
       return "Directed graph:";
     }
     return "Undirected graph:";
@@ -372,11 +431,17 @@ class HomePage extends State<DetailPage> {
     return lesson.edges;
   }
 
-  double minEdges() => (lesson.nodes - 1) * (lesson.directed ? 2 : 1);
+  double minEdges() =>
+      (lesson.nodes - 1) *
+          (askForInformation(lesson.simulationDetails, lesson.directed)
+              ? 2
+              : 1);
 
   double maxEdges() {
     double max = lesson.nodes.floor() * (lesson.nodes.floor() - 1) / 2;
-    return lesson.directed ? max * 2 : max;
+    return askForInformation(lesson.simulationDetails, lesson.directed)
+        ? max * 2
+        : max;
   }
 }
 

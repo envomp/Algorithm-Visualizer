@@ -13,8 +13,9 @@ const DEGREE_TO_RADIAN = 57.29577957;
 const PROPORTIONAL_ROTATION_RATE = 40;
 
 class Node extends SpriteComponent {
-  double weight;
-  Paragraph nodeWeightText;
+  int weight;
+  int visualWeightAfterPathFinding;
+  Lesson lesson;
 
   final double xCoordinate;
   final double yCoordinate;
@@ -33,16 +34,33 @@ class Node extends SpriteComponent {
     x = xCoordinate;
     y = yCoordinate;
     anchor = Anchor.center;
+    this.lesson = lesson;
 
     if (weight != null) {
+      visualWeightAfterPathFinding = weight;
+    }
+  }
+
+  @override
+  void render(Canvas canvas) {
+    super.render(canvas);
+
+    if (visualWeightAfterPathFinding != null) {
       ParagraphBuilder paragraph = new ParagraphBuilder(new ParagraphStyle());
       paragraph.pushStyle(new TextStyle(
           color: new Color(0xff000000),
           fontSize: min(max(8, 10 + weight.abs() / 6 - lesson.nodes / 10),
               nodeSize / 2)));
-      paragraph.addText(weight.floor().toString());
-      nodeWeightText = paragraph.build()
+      paragraph.addText(pow(2, 20) == visualWeightAfterPathFinding
+          ? '∞'
+          : visualWeightAfterPathFinding.floor().toString());
+      Paragraph nodeWeightText = paragraph.build()
         ..layout(new ParagraphConstraints(width: 180.0));
+
+      canvas.drawParagraph(
+          nodeWeightText,
+          new Offset((nodeSize - nodeWeightText.minIntrinsicWidth) / 2,
+              (nodeSize - nodeWeightText.height) / 2));
     }
   }
 
@@ -65,8 +83,8 @@ class Node extends SpriteComponent {
 }
 
 class Path extends SpriteComponent {
-  double weight;
-
+  int weight = 0;
+  bool full;
   final Node rootNode;
   final Node destinationNode;
 
@@ -76,11 +94,15 @@ class Path extends SpriteComponent {
             pythagoreanTheorem(rootNode, destinationNode) -
                 rootNode.nodeSize / 2 -
                 destinationNode.nodeSize / 2,
-            'path_reversed.png');
+      'path_reversed.png') {
+    full = true;
+  }
 
   Path.half(this.rootNode, this.destinationNode)
       : super.rectangle(
-            1, pythagoreanTheorem(rootNode, destinationNode) / 2, 'path.png');
+      1, pythagoreanTheorem(rootNode, destinationNode) / 2, 'path.png') {
+    full = false;
+  }
 
   Path.weighted(this.rootNode, this.destinationNode, this.weight)
       : super.rectangle(
@@ -88,11 +110,15 @@ class Path extends SpriteComponent {
             pythagoreanTheorem(rootNode, destinationNode) -
                 rootNode.nodeSize / 2 -
                 destinationNode.nodeSize / 2,
-            'path_reversed.png');
+      weight < 0 ? 'path_reversed_negative.png' : 'path_reversed.png') {
+    full = true;
+  }
 
   Path.weightedHalf(this.rootNode, this.destinationNode, this.weight)
-      : super.rectangle(
-            1, pythagoreanTheorem(rootNode, destinationNode) / 2, 'path.png');
+      : super.rectangle(1, pythagoreanTheorem(rootNode, destinationNode) / 2,
+      weight < 0 ? 'path_negative' : 'path.png') {
+    full = false;
+  }
 
   void initPath() {
     double deltaX = destinationNode.x - rootNode.x;
@@ -107,5 +133,29 @@ class Path extends SpriteComponent {
     y = rootNode.y + coeff * deltaY;
     anchor = Anchor.bottomCenter;
     angle = angleInBetween(rootNode, destinationNode) - pi / 2;
+  }
+
+  void activate() {
+    if (full) {
+      sprite = new Sprite('path_reversed_active.png');
+    } else {
+      sprite = new Sprite('path_active.png');
+    }
+  }
+
+  void deactivate() {
+    if (full) {
+      if (weight < 0) {
+        sprite = new Sprite('path_negative_reversed.png');
+      } else {
+        sprite = new Sprite('path_reversed.png');
+      }
+    } else {
+      if (weight < 0) {
+        sprite = new Sprite('path_negative.png');
+      } else {
+        sprite = new Sprite('path.png');
+      }
+    }
   }
 }

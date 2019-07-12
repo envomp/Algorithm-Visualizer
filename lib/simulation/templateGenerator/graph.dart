@@ -3,14 +3,18 @@ import 'dart:ui';
 
 import 'package:AlgorithmVisualizer/formulas.dart';
 import 'package:AlgorithmVisualizer/model/lesson.dart';
-import 'package:AlgorithmVisualizer/simulation/algorithms/templateGenerator/template_simulation_executor.dart';
+import 'package:AlgorithmVisualizer/simulation/algorithms/pathfinding/dijkstra.dart';
+import 'package:AlgorithmVisualizer/simulation/algorithms/pathfinding/pathfinding_algorithm_template.dart';
 import 'package:AlgorithmVisualizer/simulation/node.dart';
 import 'package:AlgorithmVisualizer/simulation/simulation_algorithm.dart';
+import 'package:AlgorithmVisualizer/simulation/templateGenerator/template_simulation_executor.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 class Graph implements TemplateSimulationExecutor {
   final Lesson lesson;
+  PathFindingAlgorithmTemplate executiveAlgorithm;
+  bool isHandleInput = true;
 
   // constants that are calculated from lesson
   double minWeight;
@@ -33,6 +37,7 @@ class Graph implements TemplateSimulationExecutor {
 
   var preCalculatedEdges = new EqualityMap.from(const ListEquality(), {});
 
+  bool hardReset;
   Node root;
   Node destination;
   double elapsedTime = 0;
@@ -65,13 +70,6 @@ class Graph implements TemplateSimulationExecutor {
 
     nodes.forEach((x) {
       x.render(canvas);
-      if (askForInformation(
-          lesson.additionalInformation, lesson.weightsOnNodes)) {
-        canvas.drawParagraph(
-            x.nodeWeightText,
-            new Offset((x.nodeSize - x.nodeWeightText.minIntrinsicWidth) / 2,
-                (x.nodeSize - x.nodeWeightText.height) / 2));
-      }
       canvas.restore();
       canvas.save();
     });
@@ -90,18 +88,13 @@ class Graph implements TemplateSimulationExecutor {
         case States.algorithm:
           switch (lesson.algorithmType) {
             case AlgorithmType.pathFinding:
-              if (root != null || destination != null) {
-                switch (lesson.title) {
-                  case "Dijkstra's algorithm":
-                    break;
-                  case "A-star algorithm":
-                    break;
-                  case "Bellman–Ford algorithm":
-                    break;
-                  case "Floyd-Warshall algorithm":
-                    break;
-                  case "Johnson's algorithm":
-                    break;
+              if (executiveAlgorithm == null) {
+                pathFindingAlgorithmSelector();
+              } else {
+                if (executiveAlgorithm.done) {
+                  resetSimulation();
+                } else {
+                  runSimulation();
                 }
               }
               break;
@@ -130,9 +123,65 @@ class Graph implements TemplateSimulationExecutor {
     });
   }
 
+  void resetSimulation() {
+    if (root == null) {
+      for (Node node in nodes) {
+        node.visualWeightAfterPathFinding = node.weight;
+        node.deactivate();
+      }
+      for (Path path in paths) {
+        path.deactivate();
+      }
+      executiveAlgorithm = null;
+    } else {
+      hardReset = true;
+      if (executiveAlgorithm != null) {
+        isHandleInput = true;
+        executiveAlgorithm.overRideNodeWeights();
+      }
+    }
+  }
+
+  void runSimulation() {
+    if (askForInformation(lesson.simulationDetails, lesson.stepByStep)) {
+      executiveAlgorithm.step();
+    } else {
+      executiveAlgorithm.allInOne();
+    }
+    executiveAlgorithm.overRideNodeWeights();
+  }
+
+  void pathFindingAlgorithmSelector() {
+    switch (lesson.title) {
+      case "Dijkstra's algorithm":
+        if (checkRequirementsToAllNodes()) {
+          executiveAlgorithm =
+              DijkstraAlgorithm(root, destination, nodes, paths);
+          isHandleInput = false;
+        }
+        break;
+      case "A-star algorithm":
+        break;
+      case "Bellman–Ford algorithm":
+        break;
+      case "Floyd-Warshall algorithm":
+        break;
+      case "Johnson's algorithm":
+        break;
+    }
+  }
+
+  bool checkRequirementsFull() =>
+      root != null && destination != null && nodes != null && paths != null;
+
+  bool checkRequirementsToAllNodes() =>
+      root != null && nodes != null && paths != null;
+
+  bool checkRequirements() => nodes != null && paths != null;
+
   @override
   handleTap(Offset globalPosition, double offset) {
-    if (state == States.algorithm && (root == null || destination == null)) {
+    if (state == States.algorithm && isHandleInput) {
       double paddingLeft = 30.0;
       double paddingTop = 90.0;
       if (root == null) {
@@ -148,26 +197,28 @@ class Graph implements TemplateSimulationExecutor {
           }
         }
       } else {
-        if (pythagoreanTheoremAll(
+        if (hardReset ||
+            pythagoreanTheoremAll(
                 root.x,
                 root.y,
                 globalPosition.dx - paddingLeft,
                 globalPosition.dy + offset - paddingTop) <
-            minNodeSize) {
+                minNodeSize) {
           root.deactivate();
           root = null;
+          hardReset = false;
         } else {
-          for (Node node in nodes) {
-            if (pythagoreanTheoremAll(
-                    node.x,
-                    node.y,
-                    globalPosition.dx - paddingLeft,
-                    globalPosition.dy + offset - paddingTop) <
-                minNodeSize) {
-              destination = node;
-              destination.activate();
-            }
-          }
+          // for (Node node in nodes) {
+          //   if (pythagoreanTheoremAll(
+          //           node.x,
+          //           node.y,
+          //           globalPosition.dx - paddingLeft,
+          //           globalPosition.dy + offset - paddingTop) <
+          //       minNodeSize) {
+          //     destination = node;
+          //     destination.activate();
+          //   }
+          // }
         }
       }
     }
@@ -222,8 +273,10 @@ class Graph implements TemplateSimulationExecutor {
       minNodeSize);
 
   Node weightedNodeCreation(Size size) {
-    var weight =
-        rnd.nextInt(maxWeight.floor()) * (rnd.nextDouble() > 0.9 ? -1.0 : 1.0);
+    int weight = rnd.nextInt(maxWeight.floor()) *
+        (askForInformation(lesson.additionalInformation, lesson.negativeWeights)
+            ? (rnd.nextDouble() > 0.9 ? -1 : 1)
+            : 1);
     return new Node.weighted(
         generateXCoordinate(maxNodeSize, size),
         generateYCoordinate(maxNodeSize, size),
@@ -242,7 +295,11 @@ class Graph implements TemplateSimulationExecutor {
   ///////////////////////// PATH INITIALIZATION CODE ///////////////////////////
 
   void pathInitialization(double t) {
-    if (paths.length < lesson.edges.floor() * (lesson.directed ? 1 : 2)) {
+    if (paths.length <
+        lesson.edges.floor() *
+            (askForInformation(lesson.simulationDetails, lesson.directed)
+                ? 1
+                : 2)) {
       //every undirected path counts as 2
       if (paths.length < (lesson.nodes.floor() - 1) * 2) {
         if (askForInformation(
@@ -379,11 +436,15 @@ class Graph implements TemplateSimulationExecutor {
         return new Path.weightedHalf(
             root,
             destination,
-            rnd.nextInt(maxNodeSize.floor() - minNodeSize.floor()) +
-                minNodeSize);
+            (rnd.nextInt(maxNodeSize.floor() - minNodeSize.floor()) +
+                minNodeSize)
+                .floor());
       }
     }
-    return new Path.weighted(root, destination,
-        rnd.nextInt(maxNodeSize.floor() - minNodeSize.floor()) + minNodeSize);
+    return new Path.weighted(
+        root,
+        destination,
+        (rnd.nextInt(maxNodeSize.floor() - minNodeSize.floor()) + minNodeSize)
+            .floor());
   }
 }

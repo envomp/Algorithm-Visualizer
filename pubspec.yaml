@@ -50,6 +50,10 @@ flutter:
     - assets/images/nodeActive.png
     - assets/images/path.png
     - assets/images/path_reversed.png
+    - assets/images/path_negative.png
+    - assets/images/path_reversed_negative.png
+    - assets/images/path_reversed_active.png
+    - assets/images/path_active.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

@@ -79,7 +79,7 @@ class Game extends State<GameWrapper> {
                   fit: FlexFit.tight,
                   child: Slider(
                     activeColor: Colors.green,
-                    min: 1.0,
+                    min: 0.0,
                     max: 10.0,
                     divisions: 100,
                     onChanged: (value) {
