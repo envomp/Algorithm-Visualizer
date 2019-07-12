@@ -13,7 +13,7 @@ const DEGREE_TO_RADIAN = 57.29577957;
 const PROPORTIONAL_ROTATION_RATE = 40;
 
 class Node extends SpriteComponent {
-  int weight;
+  int weight = 0;
   int visualWeightAfterPathFinding;
   Lesson lesson;
 

@@ -7,6 +7,7 @@ import '../../node.dart';
 class DijkstraAlgorithm extends PathFindingAlgorithmTemplate {
   int V;
   List<List<int>> graph;
+  List<List<Path>> activeNodesForShortestPath;
   List<int> dist;
   List<bool> sptSet;
   int i = 0;
@@ -20,6 +21,14 @@ class DijkstraAlgorithm extends PathFindingAlgorithmTemplate {
     dist[nodes.indexOf(root)] = 0;
     sptSet = new List<bool>.generate(V, (i) => false);
     graph = new List();
+    activeNodesForShortestPath = new List();
+    for (var i = 0; i < V; i++) {
+      List<Path> list = new List();
+      for (var j = 0; j < V; j++) {
+        list.add(null);
+      }
+      activeNodesForShortestPath.add(list);
+    }
 
     for (Node source in nodes) {
       List<int> temp = new List();
@@ -42,20 +51,9 @@ class DijkstraAlgorithm extends PathFindingAlgorithmTemplate {
     }
 
     if (i % V == 0) {
-      // Pick the minimum distance vertex from
-      // the set of vertices not yet processed.
-      // u is always equal to src in first iteration
       u = minDistance();
-
-      // Put the minimum distance vertex in the
-      // shortest path tree
       sptSet[u] = true;
       nodes[u].activate();
-
-      // Update dist value of the adjacent vertices
-      // of the picked vertex only if the current
-      // distance is greater than new distance and
-      // the vertex in not in the shortest path tree
     }
 
     int v = i % V;
@@ -63,8 +61,12 @@ class DijkstraAlgorithm extends PathFindingAlgorithmTemplate {
     if (graph[u][v] >= 0 &&
         sptSet[v] == false &&
         dist[v] > dist[u] + graph[u][v]) {
+      if (activeNodesForShortestPath[u][v] != null) {
+        activeNodesForShortestPath[u][v].deactivate();
+      }
+      activeNodesForShortestPath[u][v] = getConnection(nodes[u], nodes[v]);
+      activeNodesForShortestPath[u][v].activate();
       dist[v] = dist[u] + graph[u][v];
-      getConnection(nodes[u], nodes[v]).activate();
     }
 
     if (i == pow(V, 2) - 1) {
@@ -138,6 +140,7 @@ class DijkstraAlgorithm extends PathFindingAlgorithmTemplate {
       // the set of vertices not yet processed.
       // u is always equal to src in first iteration
       int u = minDistance();
+      nodes[u].activate();
       // Put the minimum distance vertex in the
       // shortest path tree
       sptSet[u] = true;
@@ -149,6 +152,11 @@ class DijkstraAlgorithm extends PathFindingAlgorithmTemplate {
         if (graph[u][v] >= 0 &&
             sptSet[v] == false &&
             dist[v] > dist[u] + graph[u][v]) {
+          if (activeNodesForShortestPath[u][v] != null) {
+            activeNodesForShortestPath[u][v].deactivate();
+          }
+          activeNodesForShortestPath[u][v] = getConnection(nodes[u], nodes[v]);
+          activeNodesForShortestPath[u][v].activate();
           dist[v] = dist[u] + graph[u][v];
         }
       }
