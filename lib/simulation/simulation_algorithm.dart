@@ -8,7 +8,7 @@ import 'templateGenerator/Graph.dart';
 import 'templateGenerator/template_simulation_executor.dart';
 
 final Random rnd = new Random();
-enum States { drawNodes, drawConnections, algorithm, finisher }
+enum States { drawNodes, drawConnections, algorithm }
 
 class SimulationAlgorithm extends BaseGame {
   final Lesson lesson;
@@ -18,8 +18,7 @@ class SimulationAlgorithm extends BaseGame {
   SimulationAlgorithm(this.lesson) {
     switch (lesson.algorithmTemplate) {
       case AlgorithmTemplate.graph:
-        abstractSimulationExecutor =
-        new Graph(lesson);
+          abstractSimulationExecutor = new Graph(lesson);
         break;
       case AlgorithmTemplate.maze:
         // TODO: Handle this case.

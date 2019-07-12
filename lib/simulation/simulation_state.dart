@@ -13,11 +13,9 @@ class Game extends State<GameWrapper> {
     Flame.util.addGestureRecognizer(_controllers.gestureController
       ..onTapUp = (TapUpDetails details) {
         try {
-          simulation.abstractSimulationExecutor.handleTap(
-              details.globalPosition, _controllers.scrollController.offset);
+            simulation.abstractSimulationExecutor.handleTap(details.globalPosition, _controllers.scrollController.offset);
         } catch (Exception) {
-          simulation.abstractSimulationExecutor
-              .handleTap(details.globalPosition, 0);
+            simulation.abstractSimulationExecutor.handleTap(details.globalPosition, 0);
         }
       });
   }
@@ -32,13 +30,7 @@ class Game extends State<GameWrapper> {
   }
 
   ListView buildListView(BuildContext context) {
-    List<Widget> widgets = <Widget>[
-      buildAppBar(context),
-      buildDivider(context),
-      buildSimulator(context),
-      buildSlider(context),
-      buildContainer()
-    ];
+      List<Widget> widgets = <Widget>[buildAppBar(context), buildDivider(context), buildSimulator(context), buildSlider(context), buildContainer()];
 
     ListView listView = ListView.builder(
       controller: _controllers.scrollController,
@@ -83,19 +75,18 @@ class Game extends State<GameWrapper> {
                     max: 10.0,
                     divisions: 100,
                     onChanged: (value) {
-                      setState(() => simulation.abstractSimulationExecutor
-                          .speedFactor = value.floor());
+                        setState(() => simulation.abstractSimulationExecutor.speedFactor = value.floor());
                     },
-                    value: simulation.abstractSimulationExecutor.speedFactor
-                        .floorToDouble(),
+                      value: simulation.abstractSimulationExecutor.speedFactor.floorToDouble(),
                   ),
                 ),
                 Container(
                   width: 60.0,
                   alignment: Alignment.centerLeft,
-                  child: Text(
-                      '${simulation.abstractSimulationExecutor.speedFactor}',
-                      style: Theme.of(context).textTheme.display1),
+                    child: Text('${simulation.abstractSimulationExecutor.speedFactor}', style: Theme
+                        .of(context)
+                        .textTheme
+                        .display1),
                 ),
               ],
             ))
@@ -115,8 +106,10 @@ class Game extends State<GameWrapper> {
   Container buildDivider(BuildContext context) {
     return Container(
       width: 90.0,
-      padding: EdgeInsets.fromLTRB(
-          24, 0, MediaQuery.of(context).size.width - 48 - 90, 0),
+        padding: EdgeInsets.fromLTRB(24, 0, MediaQuery
+            .of(context)
+            .size
+            .width - 48 - 90, 0),
       alignment: Alignment.centerLeft,
       child: new Divider(color: Colors.green),
     );

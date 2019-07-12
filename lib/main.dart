@@ -47,13 +47,10 @@ class _ListPageState extends State<ListPage> {
   @override
   Widget build(BuildContext context) {
     ListTile makeListTile(Lesson lesson) => ListTile(
-          contentPadding:
-              EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+        contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
           leading: Container(
             padding: EdgeInsets.only(right: 12.0),
-            decoration: new BoxDecoration(
-                border: new Border(
-                    right: new BorderSide(width: 1.0, color: Colors.white24))),
+              decoration: new BoxDecoration(border: new Border(right: new BorderSide(width: 1.0, color: Colors.white24))),
             child: lesson.icon,
           ),
           title: Text(
@@ -68,27 +65,17 @@ class _ListPageState extends State<ListPage> {
                   flex: 1,
                   child: Container(
                     // tag: 'hero',
-                    child: LinearProgressIndicator(
-                        backgroundColor: Color.fromRGBO(209, 224, 224, 0.2),
-                        value: lesson.indicatorValue,
-                        valueColor: AlwaysStoppedAnimation(Colors.green)),
+                      child: LinearProgressIndicator(backgroundColor: Color.fromRGBO(209, 224, 224, 0.2), value: lesson.indicatorValue, valueColor: AlwaysStoppedAnimation(Colors.green)),
                   )),
               Expanded(
                 flex: 4,
-                child: Padding(
-                    padding: EdgeInsets.only(left: 10.0),
-                    child: Text(lesson.level,
-                        style: TextStyle(color: Colors.white))),
+                  child: Padding(padding: EdgeInsets.only(left: 10.0), child: Text(lesson.level, style: TextStyle(color: Colors.white))),
               )
             ],
           ),
-          trailing:
-              Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
+        trailing: Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
           onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => DetailPage(lesson, _controllers)));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => DetailPage(lesson, _controllers)));
           },
         );
 
@@ -126,9 +113,7 @@ class _ListPageState extends State<ListPage> {
           itemCount: AlgorithmType.values.length,
           itemBuilder: (BuildContext context, int index) {
             return IconButton(
-              icon: Icon(
-                  AlgorithmIcon.getAlgorithmIcon(AlgorithmType.values[index]),
-                  color: activePage == index ? Colors.green : Colors.white),
+                icon: Icon(AlgorithmIcon.getAlgorithmIcon(AlgorithmType.values[index]), color: activePage == index ? Colors.green : Colors.white),
               onPressed: () {
                 setState(() {
                   activePage = index;
@@ -170,12 +155,9 @@ class _ListPageState extends State<ListPage> {
 
   ListView buildListView(Card makeCard(Lesson lesson), int index) {
     List<Lesson> listLessons = getLessons();
-    listLessons
-        .sort((a, b) => a.getSortingOrder().compareTo(b.getSortingOrder()));
+    listLessons.sort((a, b) => a.getSortingOrder().compareTo(b.getSortingOrder()));
     if (index != 0) {
-      listLessons = listLessons
-          .where((f) => f.algorithmType == AlgorithmType.values[index])
-          .toList();
+        listLessons = listLessons.where((f) => f.algorithmType == AlgorithmType.values[index]).toList();
     }
     return ListView.builder(
       scrollDirection: Axis.vertical,
@@ -239,8 +221,7 @@ List<Lesson> getLessons() => [
           complexityDetails: "N-number of nodes",
           icon: Icon(Icons.wifi, color: Colors.white),
           additionalInformation: 11,
-          usages:
-              "Maximum Bandwidth Paths in Flow Networks.\nInversion of real matrices.\nFast computation of Pathfinder networks",
+          usages: "Maximum Bandwidth Paths in Flow Networks.\nInversion of real matrices.\nFast computation of Pathfinder networks",
           simulationDetails: 7,
           algorithmTemplate: AlgorithmTemplate.graph,
           algorithmType: AlgorithmType.pathFinding,
@@ -281,8 +262,7 @@ List<Lesson> getLessons() => [
           complexity: "NP-complete",
           complexityDetails: "Solution has not yet been mathematically proven.",
           icon: Icon(Icons.map, color: Colors.white),
-          usages:
-              "Mensuring that two mobile phone masts that overlap has a different frequency.",
+          usages: "Mensuring that two mobile phone masts that overlap has a different frequency.",
           simulationDetails: 6,
           additionalInformation: 0,
           algorithmTemplate: AlgorithmTemplate.graph,

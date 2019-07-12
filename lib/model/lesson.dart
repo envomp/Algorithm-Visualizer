@@ -65,19 +65,7 @@ class Lesson {
   double nodes = 2.0;
   double edges = 1.0;
 
-  Lesson(
-      {this.title,
-      this.level,
-      this.indicatorValue,
-      this.complexity,
-      this.complexityDetails,
-      this.icon,
-      this.usages,
-      this.simulationDetails,
-      this.additionalInformation,
-      this.content,
-      this.algorithmType,
-      this.algorithmTemplate});
+  Lesson({this.title, this.level, this.indicatorValue, this.complexity, this.complexityDetails, this.icon, this.usages, this.simulationDetails, this.additionalInformation, this.content, this.algorithmType, this.algorithmTemplate});
 
   double getSortingOrder() {
     return indicatorValue;

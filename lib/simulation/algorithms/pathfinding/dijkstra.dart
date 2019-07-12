@@ -5,22 +5,16 @@ import 'package:AlgorithmVisualizer/simulation/algorithms/pathfinding/pathfindin
 import '../../node.dart';
 
 class DijkstraAlgorithm extends PathFindingAlgorithmTemplate {
-  int V;
-  List<List<int>> graph;
   List<List<Path>> activeNodesForShortestPath;
   List<int> dist;
   List<bool> sptSet;
   int i = 0;
   int u;
 
-  DijkstraAlgorithm(
-      Node root, Node destination, List<Node> nodes, List<Path> paths)
-      : super(root, destination, nodes, paths) {
-    V = nodes.length;
+  DijkstraAlgorithm(Node root, Node destination, List<Node> nodes, List<Path> paths) : super(root, destination, nodes, paths) {
     dist = new List<int>.generate(V, (i) => maxInt());
     dist[nodes.indexOf(root)] = 0;
     sptSet = new List<bool>.generate(V, (i) => false);
-    graph = new List();
     activeNodesForShortestPath = new List();
     for (var i = 0; i < V; i++) {
       List<Path> list = new List();
@@ -28,19 +22,6 @@ class DijkstraAlgorithm extends PathFindingAlgorithmTemplate {
         list.add(null);
       }
       activeNodesForShortestPath.add(list);
-    }
-
-    for (Node source in nodes) {
-      List<int> temp = new List();
-      for (Node dest in nodes) {
-        Path path = getConnection(source, dest);
-        if (path == null) {
-          temp.add(-1);
-        } else {
-          temp.add(path.weight + dest.weight);
-        }
-      }
-      graph.add(temp);
     }
   }
 
@@ -58,9 +39,7 @@ class DijkstraAlgorithm extends PathFindingAlgorithmTemplate {
 
     int v = i % V;
 
-    if (graph[u][v] >= 0 &&
-        sptSet[v] == false &&
-        dist[v] > dist[u] + graph[u][v]) {
+    if (graph[u][v] >= 0 && sptSet[v] == false && dist[v] > dist[u] + graph[u][v]) {
       if (activeNodesForShortestPath[u][v] != null) {
         activeNodesForShortestPath[u][v].deactivate();
       }
@@ -121,8 +100,6 @@ class DijkstraAlgorithm extends PathFindingAlgorithmTemplate {
     return minIndex;
   }
 
-  int maxInt() => pow(2, 20);
-
   @override
   void overRideNodeWeights() {
     for (int v = 0; v < V; v++) {
@@ -149,9 +126,7 @@ class DijkstraAlgorithm extends PathFindingAlgorithmTemplate {
       // distance is greater than new distance and
       // the vertex in not in the shortest path tree
       for (int v = 0; v < V; v++) {
-        if (graph[u][v] >= 0 &&
-            sptSet[v] == false &&
-            dist[v] > dist[u] + graph[u][v]) {
+          if (graph[u][v] >= 0 && sptSet[v] == false && dist[v] > dist[u] + graph[u][v]) {
           if (activeNodesForShortestPath[u][v] != null) {
             activeNodesForShortestPath[u][v].deactivate();
           }

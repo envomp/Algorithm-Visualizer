@@ -18,18 +18,13 @@ class HomePage extends State<DetailPage> {
   Widget build(BuildContext context) {
     final levelIndicator = Container(
       child: Container(
-        child: LinearProgressIndicator(
-            backgroundColor: Color.fromRGBO(209, 224, 224, 0.2),
-            value: lesson.indicatorValue,
-            valueColor: AlwaysStoppedAnimation(Colors.green)),
+          child: LinearProgressIndicator(backgroundColor: Color.fromRGBO(209, 224, 224, 0.2), value: lesson.indicatorValue, valueColor: AlwaysStoppedAnimation(Colors.green)),
       ),
     );
 
     final complexityLevel = Container(
       padding: const EdgeInsets.all(7.0),
-      decoration: new BoxDecoration(
-          border: new Border.all(color: Colors.white),
-          borderRadius: BorderRadius.circular(5.0)),
+        decoration: new BoxDecoration(border: new Border.all(color: Colors.white), borderRadius: BorderRadius.circular(5.0)),
       child: new Text(
         lesson.complexity.toString(),
         style: TextStyle(color: Colors.white),
@@ -94,12 +89,7 @@ class HomePage extends State<DetailPage> {
     );
 
     final bottomContentText = Text(
-      "Complexity description:\n\n" +
-          lesson.complexityDetails +
-          "\n\n\nIntroduction:\n\n" +
-          lesson.content +
-          "\n\n\nApplications and generalizations:\n\n" +
-          lesson.usages,
+        "Complexity description:\n\n" + lesson.complexityDetails + "\n\n\nIntroduction:\n\n" + lesson.content + "\n\n\nApplications and generalizations:\n\n" + lesson.usages,
       style: TextStyle(fontSize: 18.0),
     );
 
@@ -108,31 +98,22 @@ class HomePage extends State<DetailPage> {
         width: MediaQuery.of(context).size.width,
         child: RaisedButton(
           onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => GameWrapper(
-                        new SimulationAlgorithm(lesson), _controllers)));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => GameWrapper(new SimulationAlgorithm(lesson), _controllers)));
           },
           color: Colors.green,
-          child: Text("Visual demonstration",
-              style: TextStyle(color: Colors.white)),
+            child: Text("Visual demonstration", style: TextStyle(color: Colors.white)),
         ));
 
-    final directedSwitch = lesson.algorithmTemplate ==
-                AlgorithmTemplate.graph &&
-            askForInformation(lesson.simulationDetails, lesson.askForDirection)
+    final directedSwitch = lesson.algorithmTemplate == AlgorithmTemplate.graph && askForInformation(lesson.simulationDetails, lesson.askForDirection)
         ? Container(
             padding: EdgeInsets.fromLTRB(10.0, 32.0, 0.0, 0.0),
             width: MediaQuery.of(context).size.width,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Text(getDirectedMessage(),
-                    style: TextStyle(color: Colors.black)),
+                  Text(getDirectedMessage(), style: TextStyle(color: Colors.black)),
                 Switch(
-                  value: askForInformation(
-                      lesson.simulationDetails, lesson.directed),
+                    value: askForInformation(lesson.simulationDetails, lesson.directed),
                   onChanged: (value) {
                     setState(() {
                       changeSimulationDetails(lesson.directed);
@@ -147,168 +128,82 @@ class HomePage extends State<DetailPage> {
           )
         : Container();
 
-    final weightedEdgesSwitch =
-        lesson.algorithmTemplate == AlgorithmTemplate.graph &&
-                askForInformation(
-                    lesson.additionalInformation, lesson.weightLocation)
-            ? Container(
-                padding: EdgeInsets.fromLTRB(10.0, 32.0, 0.0, 0.0),
-                width: MediaQuery.of(context).size.width,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text(getWeightedEdgeMessage(),
-                        style: TextStyle(color: Colors.black)),
-                    Switch(
-                      value: askForEdgeInformation(),
-                      onChanged: (value) {
-                        setState(() {
-                          if (askForEdgeInformation()) {
-                            lesson.additionalInformation -= lesson.askForEdges;
-                          } else {
-                            lesson.additionalInformation += lesson.askForEdges;
-                          }
-                        });
-                      },
-                      activeTrackColor: Colors.lightGreenAccent,
-                      activeColor: Colors.green,
-                    ),
-                  ],
-                ),
-              )
-            : Container();
-
-    final weightedNotification = !askForEdgeInformation() &&
-            lesson.algorithmTemplate == AlgorithmTemplate.graph &&
-            !askForNodeInformation() &&
-            askForInformation(
-                lesson.additionalInformation, lesson.weightLocation)
+    final weightedEdgesSwitch = lesson.algorithmTemplate == AlgorithmTemplate.graph && askForInformation(lesson.additionalInformation, lesson.weightLocation)
         ? Container(
-            padding: EdgeInsets.fromLTRB(10.0, 32.0, 0.0, 0.0),
-            width: MediaQuery.of(context).size.width,
-            child: Text("I will find a path with the least nodes on path!",
-                style: TextStyle(color: Colors.black)))
+        padding: EdgeInsets.fromLTRB(10.0, 32.0, 0.0, 0.0),
+        width: MediaQuery
+            .of(context)
+            .size
+            .width,
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+                Text(getWeightedEdgeMessage(), style: TextStyle(color: Colors.black)),
+                Switch(
+                    value: askForEdgeInformation(),
+                    onChanged: (value) {
+                        setState(() {
+                            if (askForEdgeInformation()) {
+                                lesson.additionalInformation -= lesson.askForEdges;
+                            } else {
+                                lesson.additionalInformation += lesson.askForEdges;
+                            }
+                        });
+                    },
+                    activeTrackColor: Colors.lightGreenAccent,
+                    activeColor: Colors.green,
+                ),
+            ],
+        ),
+    )
         : Container();
 
-    final weightedNodeSwitch =
-        lesson.algorithmTemplate == AlgorithmTemplate.graph &&
-                askForInformation(
-                    lesson.additionalInformation, lesson.weightLocation)
-            ? Container(
-                padding: EdgeInsets.fromLTRB(10.0, 32.0, 0.0, 0.0),
-                width: MediaQuery.of(context).size.width,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text(getWeightedNodeMessage(),
-                        style: TextStyle(color: Colors.black)),
-                    Switch(
-                      value: askForNodeInformation(),
-                      onChanged: (value) {
-                        setState(() {
-                          if (askForNodeInformation()) {
-                            lesson.additionalInformation -= lesson.askForNodes;
-                          } else {
-                            lesson.additionalInformation += lesson.askForNodes;
-                          }
-                        });
-                      },
-                      activeTrackColor: Colors.lightGreenAccent,
-                      activeColor: Colors.green,
-                    ),
-                  ],
-                ),
-              )
-            : Container();
+    final weightedNotification = !askForEdgeInformation() && lesson.algorithmTemplate == AlgorithmTemplate.graph && !askForNodeInformation() && askForInformation(lesson.additionalInformation, lesson.weightLocation)
+        ? Container(padding: EdgeInsets.fromLTRB(10.0, 32.0, 0.0, 0.0), width: MediaQuery
+        .of(context)
+        .size
+        .width, child: Text("I will find a path with the least nodes on path!", style: TextStyle(color: Colors.black)))
+        : Container();
 
-    final numberOfNodesText = lesson.algorithmTemplate ==
-                AlgorithmTemplate.graph &&
-            askForInformation(lesson.simulationDetails, lesson.askForNodes)
+    final weightedNodeSwitch = lesson.algorithmTemplate == AlgorithmTemplate.graph && askForInformation(lesson.additionalInformation, lesson.weightLocation)
+        ? Container(
+        padding: EdgeInsets.fromLTRB(10.0, 32.0, 0.0, 0.0),
+        width: MediaQuery
+            .of(context)
+            .size
+            .width,
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+                Text(getWeightedNodeMessage(), style: TextStyle(color: Colors.black)),
+                Switch(
+                    value: askForNodeInformation(),
+                    onChanged: (value) {
+                        setState(() {
+                            if (askForNodeInformation()) {
+                                lesson.additionalInformation -= lesson.askForNodes;
+                            } else {
+                                lesson.additionalInformation += lesson.askForNodes;
+                            }
+                        });
+                    },
+                    activeTrackColor: Colors.lightGreenAccent,
+                    activeColor: Colors.green,
+                ),
+            ],
+        ),
+    )
+        : Container();
+
+    final numberOfNodesText = lesson.algorithmTemplate == AlgorithmTemplate.graph && askForInformation(lesson.simulationDetails, lesson.askForNodes)
         ? Container(
             padding: EdgeInsets.fromLTRB(10.0, 32.0, 0.0, 0.0),
             width: MediaQuery.of(context).size.width,
-            child:
-                Text("Number of nodes:", style: TextStyle(color: Colors.black)),
+        child: Text("Number of nodes:", style: TextStyle(color: Colors.black)),
           )
         : Container();
 
-    final numberOfNodesSlider =
-        lesson.algorithmTemplate == AlgorithmTemplate.graph &&
-                askForInformation(lesson.simulationDetails, lesson.askForNodes)
-            ? Container(
-                padding: EdgeInsets.symmetric(vertical: 16.0),
-                width: MediaQuery.of(context).size.width,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Flexible(
-                      flex: 1,
-                      child: Slider(
-                        activeColor: Colors.green,
-                        min: 2.0,
-                        max: 100.0,
-                        divisions: 98,
-                        onChanged: (value) {
-                          setState(() => lesson.nodes = value);
-                          minMaxEdges();
-                        },
-                        value: lesson.nodes,
-                      ),
-                    ),
-                    Container(
-                      width: 60.0,
-                      alignment: Alignment.center,
-                      child: Text('${lesson.nodes.toInt()}',
-                          style: Theme.of(context).textTheme.display1),
-                    ),
-                  ],
-                ))
-            : Container();
-
-    final numberOfEdgesText = lesson.algorithmTemplate ==
-                AlgorithmTemplate.graph &&
-            askForInformation(lesson.simulationDetails, lesson.askForEdges)
-        ? Container(
-            padding: EdgeInsets.fromLTRB(10.0, 32.0, 0.0, 0.0),
-            width: MediaQuery.of(context).size.width,
-            child:
-                Text(getEdgesMessage(), style: TextStyle(color: Colors.black)),
-          )
-        : Container();
-
-    final numberOfEdgesSlider =
-        lesson.algorithmTemplate == AlgorithmTemplate.graph &&
-                askForInformation(lesson.simulationDetails, lesson.askForEdges)
-            ? Container(
-                padding: EdgeInsets.symmetric(vertical: 16.0),
-                width: MediaQuery.of(context).size.width,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Flexible(
-                      flex: 1,
-                      child: Slider(
-                        activeColor: Colors.green,
-                        min: minEdges(),
-                        max: maxEdges(),
-                        onChanged: (value) {
-                          setState(() => lesson.edges = value);
-                        },
-                        value: minMaxEdges(),
-                      ),
-                    ),
-                    Container(
-                      width: 80.0,
-                      alignment: Alignment.center,
-                      child: Text('${lesson.edges.toInt()}',
-                          style: Theme.of(context).textTheme.display1),
-                    ),
-                  ],
-                ))
-            : Container();
-
-    final simulationStepSwitch =
-    lesson.algorithmTemplate == AlgorithmTemplate.graph
+    final numberOfNodesSlider = lesson.algorithmTemplate == AlgorithmTemplate.graph && askForInformation(lesson.simulationDetails, lesson.askForNodes)
         ? Container(
         padding: EdgeInsets.symmetric(vertical: 16.0),
         width: MediaQuery
@@ -316,24 +211,100 @@ class HomePage extends State<DetailPage> {
             .size
             .width,
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Container(
-              child: Text(getStepMessage(),
-                  style: TextStyle(color: Colors.black)),
-            ),
-            Switch(
-              value: askForInformation(
-                  lesson.simulationDetails, lesson.stepByStep),
-              onChanged: (value) {
-                setState(() {
-                  changeSimulationDetails(lesson.stepByStep);
-                });
-              },
-              activeTrackColor: Colors.lightGreenAccent,
-              activeColor: Colors.green,
-            ),
-          ],
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+                Flexible(
+                    flex: 1,
+                    child: Slider(
+                        activeColor: Colors.green,
+                        min: 2.0,
+                        max: 100.0,
+                        divisions: 98,
+                        onChanged: (value) {
+                            setState(() => lesson.nodes = value);
+                            minMaxEdges();
+                        },
+                        value: lesson.nodes,
+                    ),
+                ),
+                Container(
+                    width: 60.0,
+                    alignment: Alignment.center,
+                    child: Text('${lesson.nodes.toInt()}', style: Theme
+                        .of(context)
+                        .textTheme
+                        .display1),
+                ),
+            ],
+        ))
+        : Container();
+
+    final numberOfEdgesText = lesson.algorithmTemplate == AlgorithmTemplate.graph && askForInformation(lesson.simulationDetails, lesson.askForEdges)
+        ? Container(
+            padding: EdgeInsets.fromLTRB(10.0, 32.0, 0.0, 0.0),
+            width: MediaQuery.of(context).size.width,
+        child: Text(getEdgesMessage(), style: TextStyle(color: Colors.black)),
+          )
+        : Container();
+
+    final numberOfEdgesSlider = lesson.algorithmTemplate == AlgorithmTemplate.graph && askForInformation(lesson.simulationDetails, lesson.askForEdges)
+        ? Container(
+        padding: EdgeInsets.symmetric(vertical: 16.0),
+        width: MediaQuery
+            .of(context)
+            .size
+            .width,
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+                Flexible(
+                    flex: 1,
+                    child: Slider(
+                        activeColor: Colors.green,
+                        min: minEdges(),
+                        max: maxEdges(),
+                        onChanged: (value) {
+                            setState(() => lesson.edges = value);
+                        },
+                        value: minMaxEdges(),
+                    ),
+                ),
+                Container(
+                    width: 80.0,
+                    alignment: Alignment.center,
+                    child: Text('${lesson.edges.toInt()}', style: Theme
+                        .of(context)
+                        .textTheme
+                        .display1),
+                ),
+            ],
+        ))
+        : Container();
+
+    final simulationStepSwitch = lesson.algorithmTemplate == AlgorithmTemplate.graph
+        ? Container(
+        padding: EdgeInsets.symmetric(vertical: 16.0),
+        width: MediaQuery
+            .of(context)
+            .size
+            .width,
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+                Container(
+                    child: Text(getStepMessage(), style: TextStyle(color: Colors.black)),
+                ),
+                Switch(
+                    value: askForInformation(lesson.simulationDetails, lesson.stepByStep),
+                    onChanged: (value) {
+                        setState(() {
+                            changeSimulationDetails(lesson.stepByStep);
+                        });
+                    },
+                    activeTrackColor: Colors.lightGreenAccent,
+                    activeColor: Colors.green,
+                ),
+            ],
         ))
         : Container();
 
@@ -387,14 +358,11 @@ class HomePage extends State<DetailPage> {
   }
 
   String getStepMessage() {
-    return ((askForInformation(lesson.simulationDetails, lesson.stepByStep))
-        ? "Step by step simulation: "
-        : "All in one go Simulation: ");
+      return ((askForInformation(lesson.simulationDetails, lesson.stepByStep)) ? "Step by step simulation: " : "All in one go Simulation: ");
   }
 
   String getEdgesMessage() {
-    return "Number of edges:" +
-        ((lesson.edges == minEdges()) ? "\t(min edges => always a tree)" : "");
+      return "Number of edges:" + ((lesson.edges == minEdges()) ? "\t(min edges => always a tree)" : "");
   }
 
   String getDirectedMessage() {
@@ -418,30 +386,20 @@ class HomePage extends State<DetailPage> {
     return "No weights on nodes:";
   }
 
-  bool askForEdgeInformation() =>
-      lesson.additionalInformation | lesson.askForEdges ==
-      lesson.additionalInformation;
+  bool askForEdgeInformation() => lesson.additionalInformation | lesson.askForEdges == lesson.additionalInformation;
 
-  bool askForNodeInformation() =>
-      lesson.additionalInformation | lesson.askForNodes ==
-      lesson.additionalInformation;
+  bool askForNodeInformation() => lesson.additionalInformation | lesson.askForNodes == lesson.additionalInformation;
 
   double minMaxEdges() {
     lesson.edges = max(min(lesson.edges, maxEdges()), minEdges());
     return lesson.edges;
   }
 
-  double minEdges() =>
-      (lesson.nodes - 1) *
-          (askForInformation(lesson.simulationDetails, lesson.directed)
-              ? 2
-              : 1);
+  double minEdges() => (lesson.nodes - 1) * (askForInformation(lesson.simulationDetails, lesson.directed) ? 2 : 1);
 
   double maxEdges() {
     double max = lesson.nodes.floor() * (lesson.nodes.floor() - 1) / 2;
-    return askForInformation(lesson.simulationDetails, lesson.directed)
-        ? max * 2
-        : max;
+    return askForInformation(lesson.simulationDetails, lesson.directed) ? max * 2 : max;
   }
 }
 

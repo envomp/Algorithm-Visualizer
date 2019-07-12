@@ -16,6 +16,7 @@ class Node extends SpriteComponent {
   int weight = 0;
   int visualWeightAfterPathFinding;
   Lesson lesson;
+  bool userOverrideSprite = false;
 
   final double xCoordinate;
   final double yCoordinate;
@@ -24,11 +25,9 @@ class Node extends SpriteComponent {
   Body body;
   List<Path> outgoingConnectedNodes = [];
 
-  Node(this.xCoordinate, this.yCoordinate, this.nodeSize)
-      : super.square(nodeSize, 'node.png');
+  Node(this.xCoordinate, this.yCoordinate, this.nodeSize) : super.square(nodeSize, 'node.png');
 
-  Node.weighted(this.xCoordinate, this.yCoordinate, this.nodeSize, this.weight)
-      : super.square(nodeSize, weight < 0 ? 'nodeNegative.png' : 'node.png');
+  Node.weighted(this.xCoordinate, this.yCoordinate, this.nodeSize, this.weight) : super.square(nodeSize, weight < 0 ? 'nodeNegative.png' : 'node.png');
 
   void initNode(Lesson lesson) {
     x = xCoordinate;
@@ -47,20 +46,12 @@ class Node extends SpriteComponent {
 
     if (visualWeightAfterPathFinding != null) {
       ParagraphBuilder paragraph = new ParagraphBuilder(new ParagraphStyle());
-      paragraph.pushStyle(new TextStyle(
-          color: new Color(0xff000000),
-          fontSize: min(max(8, 10 + weight.abs() / 6 - lesson.nodes / 10),
-              nodeSize / 2)));
-      paragraph.addText(pow(2, 20) == visualWeightAfterPathFinding
-          ? '∞'
-          : visualWeightAfterPathFinding.floor().toString());
+      paragraph.pushStyle(new TextStyle(color: new Color(0xff000000), fontSize: min(max(8, 10 + weight.abs() / 6 - lesson.nodes / 10), nodeSize / 2)));
+      paragraph.addText(pow(2, 20) == visualWeightAfterPathFinding ? '∞' : visualWeightAfterPathFinding.floor().toString());
       Paragraph nodeWeightText = paragraph.build()
-        ..layout(new ParagraphConstraints(width: 180.0));
+          ..layout(new ParagraphConstraints(width: 180.0));
 
-      canvas.drawParagraph(
-          nodeWeightText,
-          new Offset((nodeSize - nodeWeightText.minIntrinsicWidth) / 2,
-              (nodeSize - nodeWeightText.height) / 2));
+      canvas.drawParagraph(nodeWeightText, new Offset((nodeSize - nodeWeightText.minIntrinsicWidth) / 2, (nodeSize - nodeWeightText.height) / 2));
     }
   }
 
@@ -70,15 +61,23 @@ class Node extends SpriteComponent {
   }
 
   void activate() {
-    sprite = new Sprite('nodeActive.png');
+      if (!userOverrideSprite) {
+          sprite = new Sprite('nodeActive.png');
+      }
+  }
+
+  void activateUserOverride() {
+      sprite = new Sprite('node_user.png');
+      userOverrideSprite = true;
   }
 
   void deactivate() {
-    if (weight < 0) {
-      sprite = new Sprite('nodeNegative.png');
-    } else {
-      sprite = new Sprite('node.png');
-    }
+      userOverrideSprite = false;
+      if (weight < 0) {
+          sprite = new Sprite('nodeNegative.png');
+      } else {
+          sprite = new Sprite('node.png');
+      }
   }
 }
 
@@ -88,35 +87,20 @@ class Path extends SpriteComponent {
   final Node rootNode;
   final Node destinationNode;
 
-  Path(this.rootNode, this.destinationNode)
-      : super.rectangle(
-            1,
-            pythagoreanTheorem(rootNode, destinationNode) -
-                rootNode.nodeSize / 2 -
-                destinationNode.nodeSize / 2,
-      'path_reversed.png') {
+  Path(this.rootNode, this.destinationNode) : super.rectangle(1, pythagoreanTheorem(rootNode, destinationNode) - rootNode.nodeSize / 2 - destinationNode.nodeSize / 2, 'path_reversed.png') {
     full = true;
   }
 
-  Path.half(this.rootNode, this.destinationNode)
-      : super.rectangle(
-      1, pythagoreanTheorem(rootNode, destinationNode) / 2, 'path.png') {
+  Path.half(this.rootNode, this.destinationNode) : super.rectangle(1, pythagoreanTheorem(rootNode, destinationNode) / 2, 'path.png') {
     full = false;
   }
 
   Path.weighted(this.rootNode, this.destinationNode, this.weight)
-      : super.rectangle(
-            1,
-            pythagoreanTheorem(rootNode, destinationNode) -
-                rootNode.nodeSize / 2 -
-                destinationNode.nodeSize / 2,
-      weight < 0 ? 'path_reversed_negative.png' : 'path_reversed.png') {
+      : super.rectangle(1, pythagoreanTheorem(rootNode, destinationNode) - rootNode.nodeSize / 2 - destinationNode.nodeSize / 2, weight < 0 ? 'path_reversed_negative.png' : 'path_reversed.png') {
     full = true;
   }
 
-  Path.weightedHalf(this.rootNode, this.destinationNode, this.weight)
-      : super.rectangle(1, pythagoreanTheorem(rootNode, destinationNode) / 2,
-      weight < 0 ? 'path_negative' : 'path.png') {
+  Path.weightedHalf(this.rootNode, this.destinationNode, this.weight) : super.rectangle(1, pythagoreanTheorem(rootNode, destinationNode) / 2, weight < 0 ? 'path_negative' : 'path.png') {
     full = false;
   }
 
@@ -124,10 +108,7 @@ class Path extends SpriteComponent {
     double deltaX = destinationNode.x - rootNode.x;
     double deltaY = destinationNode.y - rootNode.y;
 
-    double coeff = 1 -
-        (pythagoreanTheorem(rootNode, destinationNode) -
-                rootNode.nodeSize / 2) /
-            pythagoreanTheorem(rootNode, destinationNode);
+    double coeff = 1 - (pythagoreanTheorem(rootNode, destinationNode) - rootNode.nodeSize / 2) / pythagoreanTheorem(rootNode, destinationNode);
 
     x = rootNode.x + coeff * deltaX;
     y = rootNode.y + coeff * deltaY;
