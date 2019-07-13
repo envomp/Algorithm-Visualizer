@@ -88,7 +88,7 @@ class DijkstraAlgorithm extends PathFindingAlgorithmTemplate {
 
   int minDistance() {
     int minimum = maxInt();
-    int minIndex;
+	int minIndex = 0;
 
     for (int v = 0; v < V; v++) {
       if (dist[v] < minimum && sptSet[v] == false) {
