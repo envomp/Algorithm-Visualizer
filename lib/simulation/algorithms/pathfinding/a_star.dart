@@ -1,5 +1,5 @@
-import 'package:AlgorithmVisualizer/simulation/algorithms/pathfinding/pathfinding_algorithm_template.dart';
-import 'package:AlgorithmVisualizer/simulation/node.dart';
+import '../../node.dart';
+import 'pathfinding_algorithm_template.dart';
 
 class AStar extends PathFindingAlgorithmTemplate {
   AStar(Node root, Node destination, List<Node> nodes, List<Path> paths) : super(root, destination, nodes, paths);

@@ -1,8 +1,7 @@
 import 'dart:math';
 
-import 'package:AlgorithmVisualizer/simulation/algorithms/pathfinding/pathfinding_algorithm_template.dart';
-
 import '../../node.dart';
+import 'pathfinding_algorithm_template.dart';
 
 class DijkstraAlgorithm extends PathFindingAlgorithmTemplate {
   List<List<Path>> activeNodesForShortestPath;
@@ -126,7 +125,7 @@ class DijkstraAlgorithm extends PathFindingAlgorithmTemplate {
       // distance is greater than new distance and
       // the vertex in not in the shortest path tree
       for (int v = 0; v < V; v++) {
-          if (graph[u][v] >= 0 && sptSet[v] == false && dist[v] > dist[u] + graph[u][v]) {
+		  if (graph[u][v] >= 0 && sptSet[v] == false && dist[v] > dist[u] + graph[u][v]) {
           if (activeNodesForShortestPath[u][v] != null) {
             activeNodesForShortestPath[u][v].deactivate();
           }

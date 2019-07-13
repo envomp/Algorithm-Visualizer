@@ -18,7 +18,7 @@ class SimulationAlgorithm extends BaseGame {
   SimulationAlgorithm(this.lesson) {
     switch (lesson.algorithmTemplate) {
       case AlgorithmTemplate.graph:
-          abstractSimulationExecutor = new Graph(lesson);
+		  abstractSimulationExecutor = new Graph(lesson);
         break;
       case AlgorithmTemplate.maze:
         // TODO: Handle this case.

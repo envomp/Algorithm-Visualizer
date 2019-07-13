@@ -1,16 +1,17 @@
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:AlgorithmVisualizer/formulas.dart';
 import 'package:AlgorithmVisualizer/model/lesson.dart';
 import 'package:AlgorithmVisualizer/simulation/algorithms/pathfinding/a_star.dart';
 import 'package:AlgorithmVisualizer/simulation/algorithms/pathfinding/dijkstra.dart';
 import 'package:AlgorithmVisualizer/simulation/algorithms/pathfinding/pathfinding_algorithm_template.dart';
-import 'package:AlgorithmVisualizer/simulation/node.dart';
-import 'package:AlgorithmVisualizer/simulation/simulation_algorithm.dart';
-import 'package:AlgorithmVisualizer/simulation/templateGenerator/template_simulation_executor.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+
+import '../../formulas.dart';
+import '../node.dart';
+import '../simulation_algorithm.dart';
+import 'template_simulation_executor.dart';
 
 class Graph implements TemplateSimulationExecutor {
   final Lesson lesson;
@@ -86,7 +87,7 @@ class Graph implements TemplateSimulationExecutor {
         case States.algorithm:
           switch (lesson.algorithmType) {
             case AlgorithmType.pathFinding:
-                pathFindingSimulationStates();
+				pathFindingSimulationStates();
               break;
             case AlgorithmType.proofOfConcept:
               switch (lesson.title) {
@@ -111,39 +112,39 @@ class Graph implements TemplateSimulationExecutor {
   }
 
   void pathFindingSimulationStates() {
-      if (executiveAlgorithm == null) {
-          pathFindingAlgorithmSelector();
+	  if (executiveAlgorithm == null) {
+		  pathFindingAlgorithmSelector();
     } else {
-          if (executiveAlgorithm.done) {
-              //reset simulation
-              hardReset = true;
+		  if (executiveAlgorithm.done) {
+			  //reset simulation
+			  hardReset = true;
         isHandleInput = true;
-          } else {
-              // run simulation
-              if (askForInformation(lesson.simulationDetails, lesson.stepByStep)) {
-                  executiveAlgorithm.step();
-              } else {
-                  executiveAlgorithm.allInOne();
-              }
-          }
-          executiveAlgorithm.overRideNodeWeights();
-      }
+		  } else {
+			  // run simulation
+			  if (askForInformation(lesson.simulationDetails, lesson.stepByStep)) {
+				  executiveAlgorithm.step();
+			  } else {
+				  executiveAlgorithm.allInOne();
+			  }
+		  }
+		  executiveAlgorithm.overRideNodeWeights();
+	  }
   }
 
   void pathFindingAlgorithmSelector() {
     switch (lesson.title) {
       case "Dijkstra's algorithm":
         if (checkRequirementsToAllNodes()) {
-            executiveAlgorithm = DijkstraAlgorithm(root, destination, nodes, paths);
+			executiveAlgorithm = DijkstraAlgorithm(root, destination, nodes, paths);
           isHandleInput = false;
         }
         break;
       case "A-star algorithm":
-          if (checkRequirementsFull()) {
-              executiveAlgorithm = AStar(root, destination, nodes, paths);
-              isHandleInput = false;
-          }
-          break;
+		  if (checkRequirementsFull()) {
+			  executiveAlgorithm = AStar(root, destination, nodes, paths);
+			  isHandleInput = false;
+		  }
+		  break;
       case "Bellman–Ford algorithm":
         break;
       case "Floyd-Warshall algorithm":
@@ -166,45 +167,45 @@ class Graph implements TemplateSimulationExecutor {
       double paddingTop = 90.0;
       if (hardReset) {
         for (Node node in nodes) {
-            node.visualWeightAfterPathFinding = node.weight;
-            node.deactivate();
+			node.visualWeightAfterPathFinding = node.weight;
+			node.deactivate();
         }
         for (Path path in paths) {
-            path.deactivate();
+			path.deactivate();
         }
         executiveAlgorithm = null;
         root = null;
         destination = null;
         hardReset = false;
       } else if (root == null) {
-          for (Node node in nodes) {
-              if (pythagoreanTheoremAll(node.x, node.y, globalPosition.dx - paddingLeft, globalPosition.dy + offset - paddingTop) < minNodeSize) {
+		  for (Node node in nodes) {
+			  if (pythagoreanTheoremAll(node.x, node.y, globalPosition.dx - paddingLeft, globalPosition.dy + offset - paddingTop) < minNodeSize) {
             root = node;
             root.activateUserOverride();
           }
         }
       } else if (destination == null) {
-          for (Node node in nodes) {
-              if (pythagoreanTheoremAll(node.x, node.y, globalPosition.dx - paddingLeft, globalPosition.dy + offset - paddingTop) < minNodeSize) {
-                  destination = node;
-                  destination.activateUserOverride();
-              }
-          }
+		  for (Node node in nodes) {
+			  if (pythagoreanTheoremAll(node.x, node.y, globalPosition.dx - paddingLeft, globalPosition.dy + offset - paddingTop) < minNodeSize) {
+				  destination = node;
+				  destination.activateUserOverride();
+			  }
+		  }
       } else if (destination != null && pythagoreanTheoremAll(destination.x, destination.y, globalPosition.dx - paddingLeft, globalPosition.dy + offset - paddingTop) < minNodeSize) {
-          destination.deactivate();
-          destination = null;
+		  destination.deactivate();
+		  destination = null;
       } else if (pythagoreanTheoremAll(root.x, root.y, globalPosition.dx - paddingLeft, globalPosition.dy + offset - paddingTop) < minNodeSize) {
-          root.deactivate();
-          root = null;
+		  root.deactivate();
+		  root = null;
       }
     }
   }
 
   void activateRoot(Offset globalPosition, double paddingLeft, double offset, double paddingTop) {
-      for (Node node in nodes) {
-          if (pythagoreanTheoremAll(node.x, node.y, globalPosition.dx - paddingLeft, globalPosition.dy + offset - paddingTop) < minNodeSize) {
-              root = node;
-              root.activate();
+	  for (Node node in nodes) {
+		  if (pythagoreanTheoremAll(node.x, node.y, globalPosition.dx - paddingLeft, globalPosition.dy + offset - paddingTop) < minNodeSize) {
+			  root = node;
+			  root.activate();
       }
     }
   }
@@ -213,7 +214,7 @@ class Graph implements TemplateSimulationExecutor {
 
   void nodeInitialization(double t, size) {
     if (nodes.length < lesson.nodes) {
-        if (askForInformation(lesson.additionalInformation, lesson.weightsOnNodes)) {
+		if (askForInformation(lesson.additionalInformation, lesson.weightsOnNodes)) {
         this.newNode(t, weightedNodeCreation, size);
       } else {
         this.newNode(t, nodeCreation, size);
@@ -254,8 +255,8 @@ class Graph implements TemplateSimulationExecutor {
   Node nodeCreation(Size size) => new Node(generateXCoordinate(minNodeSize, size), generateYCoordinate(minNodeSize, size), minNodeSize);
 
   Node weightedNodeCreation(Size size) {
-      int weight = rnd.nextInt(maxWeight.floor()) * (askForInformation(lesson.additionalInformation, lesson.negativeWeights) ? (rnd.nextDouble() > 0.9 ? -1 : 1) : 1);
-      return new Node.weighted(generateXCoordinate(maxNodeSize, size), generateYCoordinate(maxNodeSize, size), (weight.abs() / maxWeight * (maxNodeSize - minNodeSize) + minNodeSize), weight);
+	  int weight = rnd.nextInt(maxWeight.floor()) * (askForInformation(lesson.additionalInformation, lesson.negativeWeights) ? (rnd.nextDouble() > 0.9 ? -1 : 1) : 1);
+	  return new Node.weighted(generateXCoordinate(maxNodeSize, size), generateYCoordinate(maxNodeSize, size), (weight.abs() / maxWeight * (maxNodeSize - minNodeSize) + minNodeSize), weight);
   }
 
   double generateYCoordinate(nodeSize, size) => min(size.height, (elapsedTime / lesson.nodes * proportionalMultiplier) * rnd.nextDouble() * size.height);
@@ -265,16 +266,16 @@ class Graph implements TemplateSimulationExecutor {
   ///////////////////////// PATH INITIALIZATION CODE ///////////////////////////
 
   void pathInitialization(double t) {
-      if (paths.length < lesson.edges.floor() * (askForInformation(lesson.simulationDetails, lesson.directed) ? 1 : 2)) {
+	  if (paths.length < lesson.edges.floor() * (askForInformation(lesson.simulationDetails, lesson.directed) ? 1 : 2)) {
       //every undirected path counts as 2
       if (paths.length < (lesson.nodes.floor() - 1) * 2) {
-          if (askForInformation(lesson.additionalInformation, lesson.weightsOnEdges)) {
+		  if (askForInformation(lesson.additionalInformation, lesson.weightsOnEdges)) {
           newPath(t, weightedPathCreation, treeGeneration);
         } else {
           newPath(t, pathCreation, treeGeneration);
         }
       } else {
-          if (askForInformation(lesson.additionalInformation, lesson.weightsOnEdges)) {
+		  if (askForInformation(lesson.additionalInformation, lesson.weightsOnEdges)) {
           newPath(t, weightedPathCreation, graphGeneration);
         } else {
           newPath(t, pathCreation, graphGeneration);
@@ -396,7 +397,7 @@ class Graph implements TemplateSimulationExecutor {
   Path weightedPathCreation(Node root, Node destination) {
     for (Path path in paths) {
       if (path.destinationNode == root && path.rootNode == destination) {
-          return new Path.weightedHalf(root, destination, (rnd.nextInt(maxNodeSize.floor() - minNodeSize.floor()) + minNodeSize).floor());
+		  return new Path.weightedHalf(root, destination, (rnd.nextInt(maxNodeSize.floor() - minNodeSize.floor()) + minNodeSize).floor());
       }
     }
     return new Path.weighted(root, destination, (rnd.nextInt(maxNodeSize.floor() - minNodeSize.floor()) + minNodeSize).floor());

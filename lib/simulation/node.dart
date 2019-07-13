@@ -1,12 +1,12 @@
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:AlgorithmVisualizer/formulas.dart';
 import 'package:AlgorithmVisualizer/model/lesson.dart';
-import 'package:box2d_flame/box2d.dart';
 import 'package:flame/anchor.dart';
 import 'package:flame/components/component.dart';
 import 'package:flame/sprite.dart';
+
+import '../formulas.dart';
 
 const NODE_SIZE = 128.0;
 const DEGREE_TO_RADIAN = 57.29577957;
@@ -22,7 +22,6 @@ class Node extends SpriteComponent {
   final double yCoordinate;
   final double nodeSize;
 
-  Body body;
   List<Path> outgoingConnectedNodes = [];
 
   Node(this.xCoordinate, this.yCoordinate, this.nodeSize) : super.square(nodeSize, 'node.png');
@@ -48,8 +47,8 @@ class Node extends SpriteComponent {
       ParagraphBuilder paragraph = new ParagraphBuilder(new ParagraphStyle());
       paragraph.pushStyle(new TextStyle(color: new Color(0xff000000), fontSize: min(max(8, 10 + weight.abs() / 6 - lesson.nodes / 10), nodeSize / 2)));
       paragraph.addText(pow(2, 20) == visualWeightAfterPathFinding ? '∞' : visualWeightAfterPathFinding.floor().toString());
-      Paragraph nodeWeightText = paragraph.build()
-          ..layout(new ParagraphConstraints(width: 180.0));
+	  Paragraph nodeWeightText = paragraph.build()
+		  ..layout(new ParagraphConstraints(width: 180.0));
 
       canvas.drawParagraph(nodeWeightText, new Offset((nodeSize - nodeWeightText.minIntrinsicWidth) / 2, (nodeSize - nodeWeightText.height) / 2));
     }
@@ -61,23 +60,23 @@ class Node extends SpriteComponent {
   }
 
   void activate() {
-      if (!userOverrideSprite) {
-          sprite = new Sprite('nodeActive.png');
-      }
+	  if (!userOverrideSprite) {
+		  sprite = new Sprite('nodeActive.png');
+	  }
   }
 
   void activateUserOverride() {
-      sprite = new Sprite('node_user.png');
-      userOverrideSprite = true;
+	  sprite = new Sprite('node_user.png');
+	  userOverrideSprite = true;
   }
 
   void deactivate() {
-      userOverrideSprite = false;
-      if (weight < 0) {
-          sprite = new Sprite('nodeNegative.png');
-      } else {
-          sprite = new Sprite('node.png');
-      }
+	  userOverrideSprite = false;
+	  if (weight < 0) {
+		  sprite = new Sprite('nodeNegative.png');
+	  } else {
+		  sprite = new Sprite('node.png');
+	  }
   }
 }
 

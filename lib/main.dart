@@ -1,9 +1,9 @@
 import 'package:AlgorithmVisualizer/controllers/Controllers.dart';
+import 'package:AlgorithmVisualizer/model/lesson.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'detail_page.dart';
-import 'model/lesson.dart';
 
 void main() => runApp(new MyApp());
 
