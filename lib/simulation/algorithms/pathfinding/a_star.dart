@@ -5,15 +5,12 @@ import 'pathfinding_algorithm_template.dart';
 
 class AStar extends PathFindingAlgorithmTemplate {
   List<List<Path>> activeNodesForShortestPath;
-  List<int> dist;
   List<int> heuristic;
   List<bool> sptSet;
   int i = 0;
   int u;
 
   AStar(Node root, Node destination, List<Node> nodes, List<Path> paths) : super(root, destination, nodes, paths) {
-    dist = new List<int>.generate(V, (i) => maxInt());
-    dist[nodes.indexOf(root)] = 0;
     heuristic = new List<int>.generate(V, (i) => 0);
     sptSet = new List<bool>.generate(V, (i) => false);
     activeNodesForShortestPath = new List();
@@ -49,7 +46,7 @@ class AStar extends PathFindingAlgorithmTemplate {
       // distance is greater than new distance and
       // the vertex in not in the shortest path tree
       for (int v = 0; v < V; v++) {
-        if (graph[u][v] >= 0 && sptSet[v] == false && dist[v] > dist[u] + graph[u][v]) {
+        if (graph[u][v] != null && sptSet[v] == false && dist[v] > dist[u] + graph[u][v]) {
           if (activeNodesForShortestPath[u][v] != null) {
             activeNodesForShortestPath[u][v].deactivate();
           }
@@ -63,13 +60,6 @@ class AStar extends PathFindingAlgorithmTemplate {
   }
 
   int heuristicFunction(int v) => dist[v] + heuristic[v]; //todo: add an actual heuristic function.. maybe..
-
-  @override
-  void overRideNodeWeights() {
-    for (int v = 0; v < V; v++) {
-      nodes[v].visualWeightAfterPathFinding = dist[v];
-    }
-  }
 
   @override
   void step() {
@@ -89,7 +79,7 @@ class AStar extends PathFindingAlgorithmTemplate {
 
     int v = i % V;
 
-    if (graph[u][v] >= 0 && sptSet[v] == false && dist[v] > dist[u] + graph[u][v]) {
+    if (graph[u][v] != null && sptSet[v] == false && dist[v] > dist[u] + graph[u][v]) {
       if (activeNodesForShortestPath[u][v] != null) {
         activeNodesForShortestPath[u][v].deactivate();
       }

@@ -13,7 +13,7 @@ const DEGREE_TO_RADIAN = 57.29577957;
 const PROPORTIONAL_ROTATION_RATE = 40;
 
 class Node extends SpriteComponent {
-	int weight = 1;
+  int weight = 1;
   int visualWeightAfterPathFinding;
   Lesson lesson;
   bool userOverrideSprite = false;
@@ -47,8 +47,8 @@ class Node extends SpriteComponent {
       ParagraphBuilder paragraph = new ParagraphBuilder(new ParagraphStyle());
       paragraph.pushStyle(new TextStyle(color: new Color(0xff000000), fontSize: min(max(8, 10 + weight.abs() / 6 - lesson.nodes / 10), nodeSize / 2)));
       paragraph.addText(pow(2, 20) == visualWeightAfterPathFinding ? '∞' : visualWeightAfterPathFinding.floor().toString());
-	  Paragraph nodeWeightText = paragraph.build()
-		  ..layout(new ParagraphConstraints(width: 180.0));
+      Paragraph nodeWeightText = paragraph.build()
+        ..layout(new ParagraphConstraints(width: 180.0));
 
       canvas.drawParagraph(nodeWeightText, new Offset((nodeSize - nodeWeightText.minIntrinsicWidth) / 2, (nodeSize - nodeWeightText.height) / 2));
     }
@@ -60,23 +60,30 @@ class Node extends SpriteComponent {
   }
 
   void activate() {
-	  if (!userOverrideSprite) {
-		  sprite = new Sprite('nodeActive.png');
-	  }
+    if (!userOverrideSprite) {
+      sprite = new Sprite('nodeActive.png');
+    }
   }
 
   void activateUserOverride() {
-	  sprite = new Sprite('node_user.png');
-	  userOverrideSprite = true;
+    sprite = new Sprite('node_user.png');
+    userOverrideSprite = true;
   }
 
   void deactivate() {
-	  userOverrideSprite = false;
-	  if (weight < 0) {
-		  sprite = new Sprite('nodeNegative.png');
-	  } else {
-		  sprite = new Sprite('node.png');
-	  }
+    userOverrideSprite = false;
+    if (weight < 0) {
+      sprite = new Sprite('nodeNegative.png');
+    } else {
+      sprite = new Sprite('node.png');
+    }
+  }
+
+  void activateNegativeCycle() {
+    if (!userOverrideSprite) {
+      sprite = new Sprite('nodeNegative.png');
+      userOverrideSprite = true;
+    }
   }
 }
 
@@ -136,6 +143,14 @@ class Path extends SpriteComponent {
       } else {
         sprite = new Sprite('path.png');
       }
+    }
+  }
+
+  void activateNegativeCycle() {
+    if (full) {
+      sprite = new Sprite('path_reversed_negative.png');
+    } else {
+      sprite = new Sprite('path_negative.png');
     }
   }
 }

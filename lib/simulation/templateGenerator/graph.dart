@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:AlgorithmVisualizer/model/lesson.dart';
 import 'package:AlgorithmVisualizer/simulation/algorithms/pathfinding/a_star.dart';
+import 'package:AlgorithmVisualizer/simulation/algorithms/pathfinding/bellman_ford.dart';
 import 'package:AlgorithmVisualizer/simulation/algorithms/pathfinding/dijkstra.dart';
 import 'package:AlgorithmVisualizer/simulation/algorithms/pathfinding/pathfinding_algorithm_template.dart';
 import 'package:collection/collection.dart';
@@ -147,6 +148,10 @@ class Graph implements TemplateSimulationExecutor {
         }
         break;
       case "Bellman–Ford algorithm":
+        if (checkRequirementsToAllNodes()) {
+          executiveAlgorithm = BellmanFord(root, destination, nodes, paths);
+          isHandleInput = false;
+        }
         break;
       case "Floyd-Warshall algorithm":
         break;

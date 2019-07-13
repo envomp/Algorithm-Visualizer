@@ -3,46 +3,53 @@ import 'dart:math';
 import '../../node.dart';
 
 abstract class PathFindingAlgorithmTemplate {
-	final Node root;
-	final Node destination;
-	final List<Node> nodes;
-	final List<Path> paths;
-	int V;
-	List<List<int>> graph;
-	bool done = false;
+  final Node root;
+  final Node destination;
+  final List<Node> nodes;
+  final List<Path> paths;
+  List<int> dist;
+  int V;
+  List<List<int>> graph;
+  bool done = false;
 
-	PathFindingAlgorithmTemplate(this.root, this.destination, this.nodes, this.paths) {
-		V = nodes.length;
-		graph = new List();
+  PathFindingAlgorithmTemplate(this.root, this.destination, this.nodes, this.paths) {
+    V = nodes.length;
+    graph = new List();
+    dist = new List<int>.generate(V, (i) => maxInt());
+    dist[nodes.indexOf(root)] = 0;
 
-		for (Node source in nodes) {
-			List<int> temp = new List();
-			for (Node dest in nodes) {
-				Path path = getConnection(source, dest);
-				if (path == null) {
-					temp.add(-1);
-				} else {
-					temp.add(path.weight + dest.weight);
-				}
-			}
-			graph.add(temp);
-		}
-	}
+    for (Node source in nodes) {
+      List<int> temp = new List();
+      for (Node dest in nodes) {
+        Path path = getConnection(source, dest);
+        if (path == null) {
+          temp.add(null);
+        } else {
+          temp.add(path.weight + dest.weight);
+        }
+      }
+      graph.add(temp);
+    }
+  }
 
-	Object step();
+  Object step();
 
-	Object allInOne();
+  Object allInOne();
 
-	void overRideNodeWeights();
+  void overRideNodeWeights() {
+    for (int v = 0; v < V; v++) {
+      nodes[v].visualWeightAfterPathFinding = dist[v];
+    }
+  }
 
-	Path getConnection(Node root, Node destination) {
-		for (Path path in paths) {
-			if (path.rootNode == root && path.destinationNode == destination) {
-				return path;
-			}
-		}
-		return null;
-	}
+  Path getConnection(Node root, Node destination) {
+    for (Path path in paths) {
+      if (path.rootNode == root && path.destinationNode == destination) {
+        return path;
+      }
+    }
+    return null;
+  }
 
-	int maxInt() => pow(2, 20);
+  int maxInt() => pow(2, 20);
 }

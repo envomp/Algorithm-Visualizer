@@ -47,10 +47,10 @@ class _ListPageState extends State<ListPage> {
   @override
   Widget build(BuildContext context) {
     ListTile makeListTile(Lesson lesson) => ListTile(
-		contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+        contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
           leading: Container(
             padding: EdgeInsets.only(right: 12.0),
-			  decoration: new BoxDecoration(border: new Border(right: new BorderSide(width: 1.0, color: Colors.white24))),
+              decoration: new BoxDecoration(border: new Border(right: new BorderSide(width: 1.0, color: Colors.white24))),
             child: lesson.icon,
           ),
           title: Text(
@@ -65,17 +65,17 @@ class _ListPageState extends State<ListPage> {
                   flex: 1,
                   child: Container(
                     // tag: 'hero',
-					  child: LinearProgressIndicator(backgroundColor: Color.fromRGBO(209, 224, 224, 0.2), value: lesson.indicatorValue, valueColor: AlwaysStoppedAnimation(Colors.green)),
+                      child: LinearProgressIndicator(backgroundColor: Color.fromRGBO(209, 224, 224, 0.2), value: lesson.indicatorValue, valueColor: AlwaysStoppedAnimation(Colors.green)),
                   )),
               Expanded(
                 flex: 4,
-				  child: Padding(padding: EdgeInsets.only(left: 10.0), child: Text(lesson.level, style: TextStyle(color: Colors.white))),
+                  child: Padding(padding: EdgeInsets.only(left: 10.0), child: Text(lesson.level, style: TextStyle(color: Colors.white))),
               )
             ],
           ),
-		trailing: Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
+        trailing: Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
           onTap: () {
-			  Navigator.push(context, MaterialPageRoute(builder: (context) => DetailPage(lesson, _controllers)));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => DetailPage(lesson, _controllers)));
           },
         );
 
@@ -113,7 +113,7 @@ class _ListPageState extends State<ListPage> {
           itemCount: AlgorithmType.values.length,
           itemBuilder: (BuildContext context, int index) {
             return IconButton(
-				icon: Icon(AlgorithmIcon.getAlgorithmIcon(AlgorithmType.values[index]), color: activePage == index ? Colors.green : Colors.white),
+                icon: Icon(AlgorithmIcon.getAlgorithmIcon(AlgorithmType.values[index]), color: activePage == index ? Colors.green : Colors.white),
               onPressed: () {
                 setState(() {
                   activePage = index;
@@ -157,7 +157,7 @@ class _ListPageState extends State<ListPage> {
     List<Lesson> listLessons = getLessons();
     listLessons.sort((a, b) => a.getSortingOrder().compareTo(b.getSortingOrder()));
     if (index != 0) {
-		listLessons = listLessons.where((f) => f.algorithmType == AlgorithmType.values[index]).toList();
+        listLessons = listLessons.where((f) => f.algorithmType == AlgorithmType.values[index]).toList();
     }
     return ListView.builder(
       scrollDirection: Axis.vertical,
@@ -212,7 +212,8 @@ List<Lesson> getLessons() => [
           algorithmTemplate: AlgorithmTemplate.graph,
           algorithmType: AlgorithmType.pathFinding,
           content:
-              "The Bellman–Ford algorithm is an algorithm that computes shortest paths from a single source vertex to all of the other vertices in a weighted digraph. It is slower than Dijkstra's algorithm for the same problem, but more versatile, as it is capable of handling graphs in which some of the edge weights are negative numbers."),
+          "The Bellman–Ford algorithm is an algorithm that computes shortest paths from a single source vertex to all of the other vertices in a weighted digraph. It is slower than Dijkstra's algorithm for the same problem, but more "
+              "versatile, as it is capable of handling graphs in which some of the edge weights are negative numbers.\n\n(PS: if the node/path is yellow, then it takes part in a negative cycle)"),
       Lesson(
           title: "Floyd-Warshall algorithm",
           level: "Hard",
@@ -226,7 +227,9 @@ List<Lesson> getLessons() => [
           algorithmTemplate: AlgorithmTemplate.graph,
           algorithmType: AlgorithmType.pathFinding,
           content:
-              "Floyd–Warshall algorithm is an algorithm for finding shortest paths in a weighted graph with positive or negative edge weights (but with no negative cycles).A single execution of the algorithm will find the lengths (summed weights) of shortest paths between all pairs of vertices. Although it does not return details of the paths themselves, it is possible to reconstruct the paths with simple modifications to the algorithm. Floyd-Warshall's algorithm is used when any of all the nodes can be a source, so you want the shortest distance to reach any destination node from any source node. Floyd-Warshall computes shortest paths from each node to every other node."),
+          "Floyd–Warshall algorithm is an algorithm for finding shortest paths in a weighted graph with positive or negative edge weights (but with no negative cycles).A single execution of the algorithm will find the lengths (summed"
+              " weights) of shortest paths between all pairs of vertices. Although it does not return details of the paths themselves, it is possible to reconstruct the paths with simple modifications to the algorithm. "
+              "Floyd-Warshall's algorithm is used when any of all the nodes can be a source, so you want the shortest distance to reach any destination node from any source node. Floyd-Warshall computes shortest paths from each node to every other node.\n\n(PS: if the node/path is yellow, then it takes part in a negative cycle)"),
       Lesson(
           title: "Johnson's algorithm",
           level: "Advanced",
@@ -240,7 +243,7 @@ List<Lesson> getLessons() => [
           algorithmTemplate: AlgorithmTemplate.graph,
           algorithmType: AlgorithmType.pathFinding,
           content:
-              "Johnson's algorithm is a way to find the shortest paths between all pairs of vertices in a edge-weighted, directed graph. It allows some of the edge weights to be negative numbers, but no negative-weight cycles may exist. It works by using the Bellman–Ford algorithm to compute a transformation of the input graph that removes all negative weights, allowing Dijkstra's algorithm to be used on the transformed graph. Johnson's algorithm is very similar to the Floyd-Warshall algorithm; however, Floyd-Warshall is most effective for dense graphs (many edges), while Johnson's algorithm is most effective for sparse graphs (few edges). Proposed algorithmic and architectural optimizations results in more than 4.5 times speed up of all-pairs shortest path calculation for large graphs with respect to the CPU. "),
+          "Johnson's algorithm is a way to find the shortest paths between all pairs of vertices in a edge-weighted, directed graph. It allows some of the edge weights to be negative numbers, but no negative-weight cycles may exist. It works by using the Bellman–Ford algorithm to compute a transformation of the input graph that removes all negative weights, allowing Dijkstra's algorithm to be used on the transformed graph. Johnson's algorithm is very similar to the Floyd-Warshall algorithm; however, Floyd-Warshall is most effective for dense graphs (many edges), while Johnson's algorithm is most effective for sparse graphs (few edges). Proposed algorithmic and architectural optimizations results in more than 4.5 times speed up of all-pairs shortest path calculation for large graphs with respect to the CPU. \n\n(PS: if the node/path is yellow, then it takes part in a negative cycle)"),
       Lesson(
           title: "Flood fill algorithm",
           level: "Basic",
