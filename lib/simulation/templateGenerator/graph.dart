@@ -56,8 +56,8 @@ class Graph implements TemplateSimulationExecutor {
     this.minNodeSize = 30 - lesson.nodes / 5;
     this.maxNodeSize = 50 - lesson.nodes / 5;
     this.proportionalMultiplier = 120 - lesson.nodes; // time to finish loading
-    this.outgoingPathsPerNode = new List<int>.filled(lesson.nodes.floor(), 0, growable: false);
-    this.incomingPathsPerNode = new List<int>.filled(lesson.nodes.floor(), 0, growable: false);
+    this.outgoingPathsPerNode = new List<int>.filled(lesson.nodes.ceil() + 1, 0, growable: false);
+    this.incomingPathsPerNode = new List<int>.filled(lesson.nodes.ceil() + 1, 0, growable: false);
   }
 
   @override
@@ -234,8 +234,7 @@ class Graph implements TemplateSimulationExecutor {
   void newNode(double t, creationMethod, Size size) {
     // creates a new node with no overlap
     elapsedTime += t;
-    int counter = 10;
-    while (counter != 0) {
+    while (true) {
       Node node = creationMethod(size);
       bool overlapping = false;
       // check that it is not overlapping with any existing circle
@@ -252,17 +251,24 @@ class Graph implements TemplateSimulationExecutor {
       if (!overlapping) {
         node.initNode(lesson);
         nodes.add(node);
-        counter = 1;
+        break;
       }
-      counter--;
     }
   }
 
   Node nodeCreation(Size size) => new Node(generateXCoordinate(minNodeSize, size), generateYCoordinate(minNodeSize, size), minNodeSize);
 
   Node weightedNodeCreation(Size size) {
-    int weight = rnd.nextInt(maxWeight.floor()) * (askForInformation(lesson.additionalInformation, lesson.negativeWeights) ? (rnd.nextDouble() > 0.9 ? -1 : 1) : 1);
-    return new Node.weighted(generateXCoordinate(maxNodeSize, size), generateYCoordinate(maxNodeSize, size), (weight.abs() / maxWeight * (maxNodeSize - minNodeSize) + minNodeSize), weight);
+    double weight = (rnd.nextInt(maxWeight.floor()).ceilToDouble());
+    if (askForInformation(lesson.additionalInformation, lesson.negativeWeights)) {
+      if (rnd.nextDouble() > 0.9) {
+        weight *= -0.1;
+      } else {
+        weight *= 0.9;
+        weight += 10;
+      }
+    }
+    return new Node.weighted(generateXCoordinate(maxNodeSize, size), generateYCoordinate(maxNodeSize, size), (weight.abs() / maxWeight * (maxNodeSize - minNodeSize) + minNodeSize), weight.floor());
   }
 
   double generateYCoordinate(nodeSize, size) => min(size.height, (elapsedTime / lesson.nodes * proportionalMultiplier) * rnd.nextDouble() * size.height);
