@@ -7,19 +7,21 @@ import 'pathfinding_algorithm_template.dart';
 class AStar extends PathFindingAlgorithmTemplate {
   List<int> heuristic;
   List<bool> sptSet;
+  List<int> dist;
+  List<int> parent;
   int i = 0;
   int u;
 
   AStar(Node root, Node destination, List<Node> nodes, List<Path> paths) : super(root, destination, nodes, paths) {
     heuristic = new List<int>.generate(V, (i) => 0);
     sptSet = new List<bool>.generate(V, (i) => false);
+	dist = new List<int>.generate(V, (i) => maxInt());
+	dist[nodes.indexOf(root)] = 0;
+	parent = new List<int>.generate(V, (i) => -1);
   }
 
   @override
   void allInOne() {
-    if (done) {
-      return;
-    }
     for (int cout = 0; cout < V; cout++) {
       // Pick the minimum distance vertex from
       // the set of vertices not yet processed.
@@ -42,6 +44,7 @@ class AStar extends PathFindingAlgorithmTemplate {
           getConnection(nodes[u], nodes[v]).activate();
           if (sptSet[v] == false && dist[v] > dist[u] + graph[u][v]) {
             dist[v] = dist[u] + graph[u][v];
+			parent[v] = u;
           }
         }
       }
@@ -53,10 +56,6 @@ class AStar extends PathFindingAlgorithmTemplate {
 
   @override
   void step() {
-    if (done) {
-      return;
-    }
-
     if (i % V == 0) {
       u = minDistance();
       sptSet[u] = true;
@@ -73,6 +72,7 @@ class AStar extends PathFindingAlgorithmTemplate {
       getConnection(nodes[u], nodes[v]).activate();
       if (sptSet[v] == false && dist[v] > dist[u] + graph[u][v]) {
         dist[v] = dist[u] + graph[u][v];
+		parent[v] = u;
       }
     }
 
@@ -94,5 +94,22 @@ class AStar extends PathFindingAlgorithmTemplate {
       }
     }
     return minIndex;
+  }
+
+  @override
+  void overRideNodeWeights() {
+	  for (int v = 0; v < V; v++) {
+		  nodes[v].visualWeightAfterPathFinding = dist[v];
+	  }
+	  int k = nodes.indexOf(root);
+	  int i = nodes.indexOf(destination);
+	  int j = nodes.indexOf(destination);
+	  while (parent[j] != -1) {
+		  getConnection(nodes[parent[j]], nodes[j]).highLightActivate();
+		  j = parent[j];
+		  if (i != j && k != j) {
+			  nodes[j].highLightActivate();
+		  }
+	  }
   }
 }

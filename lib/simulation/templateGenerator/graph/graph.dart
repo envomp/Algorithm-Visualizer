@@ -6,6 +6,7 @@ import 'package:AlgorithmVisualizer/model/lesson.dart';
 import 'package:AlgorithmVisualizer/simulation/algorithms/pathfinding/a_star.dart';
 import 'package:AlgorithmVisualizer/simulation/algorithms/pathfinding/bellman_ford.dart';
 import 'package:AlgorithmVisualizer/simulation/algorithms/pathfinding/dijkstra.dart';
+import 'package:AlgorithmVisualizer/simulation/algorithms/pathfinding/floyd_warshall.dart';
 import 'package:AlgorithmVisualizer/simulation/algorithms/pathfinding/pathfinding_algorithm_template.dart';
 import 'package:AlgorithmVisualizer/simulation/simulation_algorithm.dart';
 import 'package:AlgorithmVisualizer/simulation/templateGenerator/graph/node.dart';
@@ -126,17 +127,32 @@ class Graph extends TemplateSimulationExecutor {
 	  }
     } else {
       if (executiveAlgorithm.done) {
-        //reset simulation
-		  setAppBarMessage('Press on screen to reset the simulation');
-		  hardReset = true;
+		  if (executiveAlgorithm.preSolve) {
+			  if (root == null) {
+				  setAppBarMessage('Select root');
+			  } else if (destination == null) {
+				  setAppBarMessage('Select destination');
+			  } else {
+				  hardReset = true;
+				  setAppBarMessage('Press on screen to reset root and destination');
+			  }
+			  executiveAlgorithm.root = root;
+			  executiveAlgorithm.destination = destination;
+		  } else {
+			  //reset simulation
+			  setAppBarMessage('Press on screen to reset the simulation');
+			  hardReset = true;
+		  }
 		  isHandleInput = true;
       } else {
         // run simulation
 		  setAppBarMessage('Running simulation');
-		  if (askForInformation(lesson.simulationDetails, lesson.stepByStep)) {
-			  executiveAlgorithm.step();
-		  } else {
-			  executiveAlgorithm.allInOne();
+		  if (!executiveAlgorithm.done) {
+			  if (askForInformation(lesson.simulationDetails, lesson.stepByStep)) {
+				  executiveAlgorithm.step();
+			  } else {
+				  executiveAlgorithm.allInOne();
+			  }
 		  }
       }
       executiveAlgorithm.overRideNodeWeights();
@@ -164,7 +180,11 @@ class Graph extends TemplateSimulationExecutor {
         }
         break;
       case "Floyd-Warshall algorithm":
-        break;
+		  if (checkRequirements()) {
+			  executiveAlgorithm = FloydWarshall(root, destination, nodes, paths);
+			  isHandleInput = false;
+		  }
+		  break;
       case "Johnson's algorithm":
         break;
     }
@@ -182,14 +202,31 @@ class Graph extends TemplateSimulationExecutor {
       double paddingLeft = 30.0;
       double paddingTop = 90.0;
       if (hardReset) {
-        for (Node node in nodes) {
-          node.visualWeightAfterPathFinding = node.weight;
-          node.deactivate();
-        }
-        for (Path path in paths) {
-          path.deactivate();
-        }
-        executiveAlgorithm = null;
+		  if (executiveAlgorithm != null && executiveAlgorithm.preSolve) {
+			  for (Node node in nodes) {
+				  node.visualWeightAfterPathFinding = node.weight;
+				  node.userOverrideSprite = false;
+				  if (node.weight < 0) {
+					  node.activateNegativeCycle();
+				  } else {
+					  node.activate();
+				  }
+			  }
+			  for (Path path in paths) {
+				  path.activate();
+			  }
+		  } else {
+			  for (Node node in nodes) {
+				  node.visualWeightAfterPathFinding = node.weight;
+				  node.userOverrideSprite = false;
+				  node.deactivate();
+			  }
+			  for (Path path in paths) {
+				  path.deactivate();
+			  }
+			  executiveAlgorithm = null;
+		  }
+
         root = null;
         destination = null;
         hardReset = false;
@@ -235,7 +272,8 @@ class Graph extends TemplateSimulationExecutor {
   void newNode(double t, creationMethod, Size size) {
     // creates a new node with no overlap
     elapsedTime += t;
-    while (true) {
+	int counter = 10;
+	while (counter > 0) {
       Node node = creationMethod(size);
       bool overlapping = false;
       // check that it is not overlapping with any existing circle
@@ -254,6 +292,7 @@ class Graph extends TemplateSimulationExecutor {
         nodes.add(node);
         break;
       }
+	  counter--;
     }
   }
 

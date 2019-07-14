@@ -3,14 +3,15 @@ import 'package:AlgorithmVisualizer/simulation/templateGenerator/graph/node.dart
 
 class BellmanFord extends PathFindingAlgorithmTemplate {
   int i = 0;
+  List<int> dist;
 
-  BellmanFord(Node root, Node destination, List<Node> nodes, List<Path> paths) : super(root, destination, nodes, paths);
+  BellmanFord(Node root, Node destination, List<Node> nodes, List<Path> paths) : super(root, destination, nodes, paths) {
+	  dist = new List<int>.generate(V, (i) => maxInt());
+	  dist[nodes.indexOf(root)] = 0;
+  }
 
   @override
   void allInOne() {
-    if (done) {
-      return;
-    }
     // Step 1: Relax all edges |V| - 1 times. A simple shortest
     // path from src to any other vertex can have at-most |V| - 1 edges
     for (int i = 0; i < V; i++) {
@@ -50,9 +51,6 @@ class BellmanFord extends PathFindingAlgorithmTemplate {
 
   @override
   void step() {
-    if (done) {
-      return;
-    }
     Path path = paths[i % paths.length];
     int u = nodes.indexOf(path.rootNode);
     int v = nodes.indexOf(path.destinationNode);
@@ -73,5 +71,12 @@ class BellmanFord extends PathFindingAlgorithmTemplate {
     if (i == V * paths.length) {
       done = true;
     }
+  }
+
+  @override
+  void overRideNodeWeights() {
+	  for (int v = 0; v < V; v++) {
+		  nodes[v].visualWeightAfterPathFinding = dist[v];
+	  }
   }
 }

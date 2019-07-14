@@ -3,20 +3,19 @@ import 'dart:math';
 import 'package:AlgorithmVisualizer/simulation/templateGenerator/graph/node.dart';
 
 abstract class PathFindingAlgorithmTemplate {
-  final Node root;
-  final Node destination;
+	Node root;
+	Node destination;
   final List<Node> nodes;
   final List<Path> paths;
-  List<int> dist;
-  int V;
+
   List<List<int>> graph;
+	int V;
   bool done = false;
+	bool preSolve = false;
 
   PathFindingAlgorithmTemplate(this.root, this.destination, this.nodes, this.paths) {
     V = nodes.length;
     graph = new List();
-    dist = new List<int>.generate(V, (i) => maxInt());
-    dist[nodes.indexOf(root)] = 0;
 
     for (Node source in nodes) {
       List<int> temp = new List();
@@ -36,11 +35,7 @@ abstract class PathFindingAlgorithmTemplate {
 
   Object allInOne();
 
-  void overRideNodeWeights() {
-    for (int v = 0; v < V; v++) {
-      nodes[v].visualWeightAfterPathFinding = dist[v];
-    }
-  }
+	void overRideNodeWeights();
 
   Path getConnection(Node root, Node destination) {
     for (Path path in paths) {

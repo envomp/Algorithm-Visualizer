@@ -64,6 +64,10 @@ class Node extends SpriteComponent {
     }
   }
 
+  void highLightActivate() {
+	  sprite = new Sprite('node_path.png');
+  }
+
   void activateUserOverride() {
     sprite = new Sprite('node_user.png');
     userOverrideSprite = true;
@@ -127,6 +131,14 @@ class Path extends SpriteComponent {
     } else {
       sprite = new Sprite('path_active.png');
     }
+  }
+
+  void highLightActivate() {
+	  if (full) {
+		  sprite = new Sprite('path_reversed_path.png');
+	  } else {
+		  sprite = new Sprite('path_path.png');
+	  }
   }
 
   void deactivate() {

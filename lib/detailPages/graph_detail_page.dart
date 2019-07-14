@@ -4,7 +4,7 @@ class GraphHomePage extends HomePage {
   GraphHomePage(Lesson lesson, Controllers controllers) : super(lesson, controllers);
 
   Container getSimulationStepSwitch(BuildContext context) {
-    return lesson.edges.floor() <= 1000 * (askForInformation(lesson.simulationDetails, lesson.directed) ? 2 : 1)
+	  return lesson.edges.floor() <= 100 * (askForInformation(lesson.simulationDetails, lesson.directed) ? 2 : 1)
         ? Container(
             padding: EdgeInsets.symmetric(vertical: 16.0),
             width: MediaQuery.of(context).size.width,
@@ -45,7 +45,7 @@ class GraphHomePage extends HomePage {
                     max: maxEdges(),
                     onChanged: (value) {
                       setState(() {
-                        if (lesson.edges > 1000 && !askForInformation(lesson.simulationDetails, lesson.stepByStep)) {
+						  if (lesson.edges > 100 && !askForInformation(lesson.simulationDetails, lesson.stepByStep)) {
                           changeSimulationDetails(lesson.stepByStep);
                         }
                         return lesson.edges = value;
