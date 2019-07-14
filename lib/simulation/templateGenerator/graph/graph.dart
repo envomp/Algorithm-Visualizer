@@ -1,20 +1,19 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:AlgorithmVisualizer/formulas/formulas.dart';
 import 'package:AlgorithmVisualizer/model/lesson.dart';
 import 'package:AlgorithmVisualizer/simulation/algorithms/pathfinding/a_star.dart';
 import 'package:AlgorithmVisualizer/simulation/algorithms/pathfinding/bellman_ford.dart';
 import 'package:AlgorithmVisualizer/simulation/algorithms/pathfinding/dijkstra.dart';
 import 'package:AlgorithmVisualizer/simulation/algorithms/pathfinding/pathfinding_algorithm_template.dart';
+import 'package:AlgorithmVisualizer/simulation/simulation_algorithm.dart';
+import 'package:AlgorithmVisualizer/simulation/templateGenerator/graph/node.dart';
+import 'package:AlgorithmVisualizer/simulation/templateGenerator/template_simulation_executor.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
-import '../../formulas.dart';
-import '../node.dart';
-import '../simulation_algorithm.dart';
-import 'template_simulation_executor.dart';
-
-class Graph implements TemplateSimulationExecutor {
+class Graph extends TemplateSimulationExecutor {
   final Lesson lesson;
   PathFindingAlgorithmTemplate executiveAlgorithm;
   bool isHandleInput = true;
@@ -46,7 +45,7 @@ class Graph implements TemplateSimulationExecutor {
   int weight;
   double elapsedTime = 0;
 
-  Graph(this.lesson) {
+  Graph(this.lesson) : super(lesson) {
     this.maxWeight = 99;
     if (askForInformation(lesson.additionalInformation, lesson.negativeWeights)) {
       this.minWeight = -this.maxWeight;
@@ -81,11 +80,13 @@ class Graph implements TemplateSimulationExecutor {
     for (int i = 0; i < speedFactor; i++) {
       switch (state) {
         case States.drawNodes:
-          nodeInitialization(t, size);
-          break;
+			setAppBarMessage('Drawing nodes');
+			nodeInitialization(t, size);
+			break;
         case States.drawConnections:
-          pathInitialization(t);
-          break;
+			setAppBarMessage('Drawing paths');
+			pathInitialization(t);
+			break;
         case States.algorithm:
           switch (lesson.algorithmType) {
             case AlgorithmType.pathFinding:
@@ -116,18 +117,27 @@ class Graph implements TemplateSimulationExecutor {
   void pathFindingSimulationStates() {
     if (executiveAlgorithm == null) {
       pathFindingAlgorithmSelector();
+	  if (executiveAlgorithm == null) {
+		  if (root == null) {
+			  setAppBarMessage('Select root');
+		  } else if (destination == null) {
+			  setAppBarMessage('Select destination');
+		  }
+	  }
     } else {
       if (executiveAlgorithm.done) {
         //reset simulation
-        hardReset = true;
-        isHandleInput = true;
+		  setAppBarMessage('Press on screen to reset the simulation');
+		  hardReset = true;
+		  isHandleInput = true;
       } else {
         // run simulation
-        if (askForInformation(lesson.simulationDetails, lesson.stepByStep)) {
-          executiveAlgorithm.step();
-        } else {
-          executiveAlgorithm.allInOne();
-        }
+		  setAppBarMessage('Running simulation');
+		  if (askForInformation(lesson.simulationDetails, lesson.stepByStep)) {
+			  executiveAlgorithm.step();
+		  } else {
+			  executiveAlgorithm.allInOne();
+		  }
       }
       executiveAlgorithm.overRideNodeWeights();
     }
@@ -203,15 +213,6 @@ class Graph implements TemplateSimulationExecutor {
       } else if (pythagoreanTheoremAll(root.x, root.y, globalPosition.dx - paddingLeft, globalPosition.dy + offset - paddingTop) < minNodeSize) {
         root.deactivate();
         root = null;
-      }
-    }
-  }
-
-  void activateRoot(Offset globalPosition, double paddingLeft, double offset, double paddingTop) {
-    for (Node node in nodes) {
-      if (pythagoreanTheoremAll(node.x, node.y, globalPosition.dx - paddingLeft, globalPosition.dy + offset - paddingTop) < minNodeSize) {
-        root = node;
-        root.activate();
       }
     }
   }

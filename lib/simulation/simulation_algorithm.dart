@@ -1,10 +1,10 @@
 import 'dart:math';
 
 import 'package:AlgorithmVisualizer/model/lesson.dart';
+import 'package:AlgorithmVisualizer/simulation/templateGenerator/graph/graph.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 
-import 'templateGenerator/Graph.dart';
 import 'templateGenerator/template_simulation_executor.dart';
 
 final Random rnd = new Random();

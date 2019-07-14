@@ -1,4 +1,4 @@
-import '../../node.dart';
+import 'package:AlgorithmVisualizer/simulation/templateGenerator/graph/node.dart';
 
 class MinPriorityQueue {
   // Simple min-priority queue.

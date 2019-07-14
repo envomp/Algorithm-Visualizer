@@ -1,5 +1,5 @@
 import 'package:AlgorithmVisualizer/simulation/algorithms/pathfinding/pathfinding_algorithm_template.dart';
-import 'package:AlgorithmVisualizer/simulation/node.dart';
+import 'package:AlgorithmVisualizer/simulation/templateGenerator/graph/node.dart';
 
 class BellmanFord extends PathFindingAlgorithmTemplate {
   int i = 0;

@@ -30,17 +30,18 @@ class Game extends State<GameWrapper> {
   }
 
   ListView buildListView(BuildContext context) {
+	  simulation.lesson.setState = setState;
 	  List<Widget> widgets = <Widget>[buildAppBar(context), buildDivider(context), buildSimulator(context), buildSlider(context), buildContainer()];
 
-    ListView listView = ListView.builder(
-      controller: _controllers.scrollController,
-      itemCount: widgets.length,
-      itemBuilder: (BuildContext context, int index) {
-        return widgets[index];
-      },
-    );
-    simulation.controller = _controllers.scrollController;
-    return listView;
+	  ListView listView = ListView.builder(
+		  controller: _controllers.scrollController,
+		  itemCount: widgets.length,
+		  itemBuilder: (BuildContext context, int index) {
+			  return widgets[index];
+		  },
+	  );
+	  simulation.controller = _controllers.scrollController;
+	  return listView;
   }
 
   Container buildContainer() {
@@ -95,12 +96,13 @@ class Game extends State<GameWrapper> {
   }
 
   Container buildSimulator(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.fromLTRB(30.0, 24.0, 30.0, 24.0),
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height - 124,
-      child: simulation.widget,
-    );
+	  return Container(padding: EdgeInsets.fromLTRB(30.0, 24.0, 30.0, 24.0), width: MediaQuery
+		  .of(context)
+		  .size
+		  .width, height: MediaQuery
+		  .of(context)
+		  .size
+		  .height - 124, child: simulation.widget);
   }
 
   Container buildDivider(BuildContext context) {
@@ -117,22 +119,24 @@ class Game extends State<GameWrapper> {
 
   Row buildAppBar(BuildContext context) {
     return Row(
-      children: <Widget>[
-        SizedBox(
-          width: 24,
-          height: 24,
-        ),
-        Container(
-          width: 10,
-          alignment: Alignment.topLeft,
-          child: InkWell(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: Icon(Icons.arrow_back, color: Colors.black, size: 24),
-          ),
-        )
-      ],
+		mainAxisAlignment: MainAxisAlignment.start,
+		children: <Widget>[
+			Container(
+				padding: EdgeInsets.symmetric(horizontal: 24),
+				child: InkWell(
+					onTap: () {
+						Navigator.pop(context);
+					},
+					child: Icon(Icons.arrow_back, color: Colors.black, size: 24),
+				),
+			),
+			Container(
+				child: new Text(
+					simulation.lesson.stateDescription,
+					style: TextStyle(color: Colors.black),
+				),
+			)
+		],
     );
   }
 }

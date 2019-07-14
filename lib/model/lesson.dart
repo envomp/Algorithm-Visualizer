@@ -1,3 +1,4 @@
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -61,6 +62,8 @@ class Lesson {
   String content;
   AlgorithmType algorithmType;
   AlgorithmTemplate algorithmTemplate;
+  String stateDescription = '';
+  Function setState;
 
   double nodes = 2.0;
   double edges = 1.0;

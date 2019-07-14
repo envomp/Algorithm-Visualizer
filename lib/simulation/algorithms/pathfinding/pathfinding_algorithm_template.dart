@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import '../../node.dart';
+import 'package:AlgorithmVisualizer/simulation/templateGenerator/graph/node.dart';
 
 abstract class PathFindingAlgorithmTemplate {
   final Node root;

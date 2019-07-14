@@ -15,4 +15,12 @@ abstract class TemplateSimulationExecutor {
   void update(double t, Size size);
 
   handleTap(Offset globalPosition, double offset);
+
+  void setAppBarMessage(String message) {
+	  if (lesson.stateDescription != message) {
+		  lesson.setState(() {
+			  lesson.stateDescription = message;
+		  });
+	  }
+  }
 }

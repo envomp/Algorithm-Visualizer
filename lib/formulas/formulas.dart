@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'simulation/node.dart';
+import 'package:AlgorithmVisualizer/simulation/templateGenerator/graph/node.dart';
 
 bool askForInformation(int whereToAsk, int whatToAsk) => whereToAsk | whatToAsk == whereToAsk;
 
