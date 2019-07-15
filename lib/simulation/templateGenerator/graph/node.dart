@@ -11,14 +11,39 @@ const NODE_SIZE = 128.0;
 const DEGREE_TO_RADIAN = 57.29577957;
 const PROPORTIONAL_ROTATION_RATE = 40;
 
+class TempNode extends Node {
+	double nodeSize;
+
+	TempNode(this.nodeSize) : super(null, null, nodeSize);
+
+	void initTempNode() {
+		x = xCoordinate;
+		y = yCoordinate;
+		anchor = Anchor.center;
+	}
+
+	@override
+	void render(Canvas canvas) {
+		prepareCanvas(canvas);
+		sprite.render(canvas, width, height);
+
+		ParagraphBuilder paragraph = new ParagraphBuilder(new ParagraphStyle());
+		paragraph.pushStyle(new TextStyle(color: new Color(0xffc4ff0e), fontSize: nodeSize / 2));
+		paragraph.addText('q');
+		Paragraph nodeWeightText = paragraph.build()
+			..layout(new ParagraphConstraints(width: 180.0));
+		canvas.drawParagraph(nodeWeightText, new Offset((nodeSize - nodeWeightText.minIntrinsicWidth) / 2, (nodeSize - nodeWeightText.height) / 2));
+	}
+}
+
 class Node extends SpriteComponent {
   int weight = 1;
   int visualWeightAfterPathFinding;
   Lesson lesson;
   bool userOverrideSprite = false;
 
-  final double xCoordinate;
-  final double yCoordinate;
+  double xCoordinate;
+  double yCoordinate;
   final double nodeSize;
 
   List<Path> outgoingConnectedNodes = [];
@@ -66,6 +91,7 @@ class Node extends SpriteComponent {
 
   void highLightActivate() {
 	  sprite = new Sprite('node_path.png');
+	  userOverrideSprite = true;
   }
 
   void activateUserOverride() {
@@ -93,6 +119,7 @@ class Node extends SpriteComponent {
 class Path extends SpriteComponent {
   int weight = 0;
   bool full;
+  bool userOverrideSprite = false;
   final Node rootNode;
   final Node destinationNode;
 
@@ -126,10 +153,12 @@ class Path extends SpriteComponent {
   }
 
   void activate() {
-    if (full) {
-      sprite = new Sprite('path_reversed_active.png');
-    } else {
-      sprite = new Sprite('path_active.png');
+	  if (!userOverrideSprite) {
+		  if (full) {
+			  sprite = new Sprite('path_reversed_active.png');
+		  } else {
+			  sprite = new Sprite('path_active.png');
+		  }
     }
   }
 
@@ -139,6 +168,7 @@ class Path extends SpriteComponent {
 	  } else {
 		  sprite = new Sprite('path_path.png');
 	  }
+	  userOverrideSprite = true;
   }
 
   void deactivate() {
@@ -155,13 +185,16 @@ class Path extends SpriteComponent {
         sprite = new Sprite('path.png');
       }
     }
+
+	userOverrideSprite = false;
   }
 
   void activateNegativeCycle() {
-    if (full) {
-      sprite = new Sprite('path_reversed_negative.png');
-    } else {
-      sprite = new Sprite('path_negative.png');
-    }
+	  userOverrideSprite = true;
+	  if (full) {
+		  sprite = new Sprite('path_reversed_negative.png');
+	  } else {
+		  sprite = new Sprite('path_negative.png');
+	  }
   }
 }

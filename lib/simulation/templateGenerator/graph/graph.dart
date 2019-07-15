@@ -7,6 +7,7 @@ import 'package:AlgorithmVisualizer/simulation/algorithms/pathfinding/a_star.dar
 import 'package:AlgorithmVisualizer/simulation/algorithms/pathfinding/bellman_ford.dart';
 import 'package:AlgorithmVisualizer/simulation/algorithms/pathfinding/dijkstra.dart';
 import 'package:AlgorithmVisualizer/simulation/algorithms/pathfinding/floyd_warshall.dart';
+import 'package:AlgorithmVisualizer/simulation/algorithms/pathfinding/johnsons.dart';
 import 'package:AlgorithmVisualizer/simulation/algorithms/pathfinding/pathfinding_algorithm_template.dart';
 import 'package:AlgorithmVisualizer/simulation/simulation_algorithm.dart';
 import 'package:AlgorithmVisualizer/simulation/templateGenerator/graph/node.dart';
@@ -169,24 +170,28 @@ class Graph extends TemplateSimulationExecutor {
         break;
       case "A-star algorithm":
         if (checkRequirementsFull()) {
-          executiveAlgorithm = AStar(root, destination, nodes, paths);
+			executiveAlgorithm = AStarAlgorithm(root, destination, nodes, paths);
           isHandleInput = false;
         }
         break;
       case "Bellman–Ford algorithm":
         if (checkRequirementsToAllNodes()) {
-          executiveAlgorithm = BellmanFord(root, destination, nodes, paths);
+			executiveAlgorithm = BellmanFordAlgorithm(root, destination, nodes, paths);
           isHandleInput = false;
         }
         break;
       case "Floyd-Warshall algorithm":
 		  if (checkRequirements()) {
-			  executiveAlgorithm = FloydWarshall(root, destination, nodes, paths);
+			  executiveAlgorithm = FloydWarshallAlgorithm(root, destination, nodes, paths);
 			  isHandleInput = false;
 		  }
 		  break;
       case "Johnson's algorithm":
-        break;
+		  if (checkRequirements()) {
+			  executiveAlgorithm = JohnsonsAlgorithm(root, destination, nodes, paths);
+			  isHandleInput = false;
+		  }
+		  break;
     }
   }
 
@@ -318,7 +323,13 @@ class Graph extends TemplateSimulationExecutor {
   ///////////////////////// PATH INITIALIZATION CODE ///////////////////////////
 
   void pathInitialization(double t) {
-    if (paths.length < lesson.edges.floor() * (askForInformation(lesson.simulationDetails, lesson.directed) ? 1 : 2)) {
+	  int negativeNodes = 0;
+	  nodes.forEach((Node e) {
+		  if (e.weight < 0) {
+			  negativeNodes++;
+		  }
+	  });
+	  if (paths.length < min(lesson.edges.floor(), ((nodes.length * (nodes.length - 1)) / 2 - (negativeNodes * (negativeNodes - 1)) / 2)) * (askForInformation(lesson.simulationDetails, lesson.directed) ? 1 : 2)) {
       //every undirected path counts as 2
       if (paths.length < (lesson.nodes.floor() - 1) * 2) {
         if (askForInformation(lesson.additionalInformation, lesson.weightsOnEdges)) {
@@ -361,12 +372,15 @@ class Graph extends TemplateSimulationExecutor {
   void treeGeneration(creationMethod) {
     if (usedNodes.isEmpty) {
       notUsedNodes = new List.from(nodes);
-      root = notUsedNodes.removeAt(0);
+	  root = notUsedNodes.where((f) => f.weight > 0).toList()[0];
+	  notUsedNodes.remove(root);
       usedNodes.add(root);
     } else {
-      List temp = usedNodes.sublist(max(0, usedNodes.length - 10));
+		List temp = usedNodes.where((f) => f.weight > 0).toList();
+		temp = temp.sublist(max(0, temp.length - 10));
       root = temp[rnd.nextInt(temp.length)];
     }
+
     destination = notUsedNodes[rnd.nextInt(notUsedNodes.length)];
     double closestDistance = pythagoreanTheorem(destination, root).abs();
 
@@ -385,7 +399,7 @@ class Graph extends TemplateSimulationExecutor {
         double tempAbs;
         tempAbs = pythagoreanTheorem(potentiallyClosest, destination).abs();
 
-        if (tempAbs < closestDistance) {
+		if (tempAbs < closestDistance && potentiallyClosest.weight > 0) {
           root = potentiallyClosest;
           closestDistance = tempAbs;
         }
@@ -401,7 +415,7 @@ class Graph extends TemplateSimulationExecutor {
     List<Node> potentialDestinations = new List();
 
     for (int i = 0; i < nodes.length; i++) {
-      if (outgoingPathsPerNode[i] < nodes.length - 1) {
+		if (outgoingPathsPerNode[i] < nodes.length - 1 && nodes[i].weight > 0) {
         potentialSources.add(nodes[i]);
       }
       if (incomingPathsPerNode[i] < nodes.length - 1) {
@@ -421,7 +435,8 @@ class Graph extends TemplateSimulationExecutor {
     if (potentialDestinations.contains(root)) {
       potentialDestinations.remove(root);
     }
-    destination = potentialDestinations[rnd.nextInt(potentialDestinations.length)];
+
+	destination = potentialDestinations[rnd.nextInt(potentialDestinations.length)];
     double closestDistance = pythagoreanTheorem(destination, root).abs();
 
     for (Node potentiallyClosest in potentialDestinations) {

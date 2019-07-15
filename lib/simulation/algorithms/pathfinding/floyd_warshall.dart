@@ -3,12 +3,12 @@ import 'dart:math';
 import 'package:AlgorithmVisualizer/simulation/algorithms/pathfinding/pathfinding_algorithm_template.dart';
 import 'package:AlgorithmVisualizer/simulation/templateGenerator/graph/node.dart';
 
-class FloydWarshall extends PathFindingAlgorithmTemplate {
+class FloydWarshallAlgorithm extends PathFindingAlgorithmTemplate {
   List<List<int>> nxt;
   List<List<int>> dist;
   int K = 0;
 
-  FloydWarshall(Node root, Node destination, List<Node> nodes, List<Path> paths) : super(root, destination, nodes, paths) {
+  FloydWarshallAlgorithm(Node root, Node destination, List<Node> nodes, List<Path> paths) : super(root, destination, nodes, paths) {
     nxt = List<List<int>>.generate(V, (i) => List<int>.generate(V, (j) => 0));
     dist = List<List<int>>.generate(V, (i) => List<int>.generate(V, (j) => maxInt()));
     preSolve = true;

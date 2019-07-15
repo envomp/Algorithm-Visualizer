@@ -4,7 +4,7 @@ import 'package:AlgorithmVisualizer/simulation/templateGenerator/graph/node.dart
 
 import 'pathfinding_algorithm_template.dart';
 
-class AStar extends PathFindingAlgorithmTemplate {
+class AStarAlgorithm extends PathFindingAlgorithmTemplate {
   List<int> heuristic;
   List<bool> sptSet;
   List<int> dist;
@@ -12,7 +12,7 @@ class AStar extends PathFindingAlgorithmTemplate {
   int i = 0;
   int u;
 
-  AStar(Node root, Node destination, List<Node> nodes, List<Path> paths) : super(root, destination, nodes, paths) {
+  AStarAlgorithm(Node root, Node destination, List<Node> nodes, List<Path> paths) : super(root, destination, nodes, paths) {
     heuristic = new List<int>.generate(V, (i) => 0);
     sptSet = new List<bool>.generate(V, (i) => false);
 	dist = new List<int>.generate(V, (i) => maxInt());

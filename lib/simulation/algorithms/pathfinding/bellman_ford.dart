@@ -1,11 +1,11 @@
 import 'package:AlgorithmVisualizer/simulation/algorithms/pathfinding/pathfinding_algorithm_template.dart';
 import 'package:AlgorithmVisualizer/simulation/templateGenerator/graph/node.dart';
 
-class BellmanFord extends PathFindingAlgorithmTemplate {
+class BellmanFordAlgorithm extends PathFindingAlgorithmTemplate {
   int i = 0;
   List<int> dist;
 
-  BellmanFord(Node root, Node destination, List<Node> nodes, List<Path> paths) : super(root, destination, nodes, paths) {
+  BellmanFordAlgorithm(Node root, Node destination, List<Node> nodes, List<Path> paths) : super(root, destination, nodes, paths) {
 	  dist = new List<int>.generate(V, (i) => maxInt());
 	  dist[nodes.indexOf(root)] = 0;
   }

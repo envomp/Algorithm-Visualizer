@@ -7,6 +7,7 @@ import 'pathfinding_algorithm_template.dart';
 class DijkstraAlgorithm extends PathFindingAlgorithmTemplate {
 	List<int> dist;
 	List<bool> sptSet;
+	List<int> parent;
 	int i = 0;
 	int u;
 
@@ -14,6 +15,7 @@ class DijkstraAlgorithm extends PathFindingAlgorithmTemplate {
 		sptSet = new List<bool>.generate(V, (i) => false);
 		dist = new List<int>.generate(V, (i) => maxInt());
 		dist[nodes.indexOf(root)] = 0;
+		parent = new List<int>.generate(V, (i) => -1);
 	}
 
 	@override
@@ -30,6 +32,7 @@ class DijkstraAlgorithm extends PathFindingAlgorithmTemplate {
 			getConnection(nodes[u], nodes[v]).activate();
 			if (sptSet[v] == false && dist[v] > dist[u] + graph[u][v]) {
 				dist[v] = dist[u] + graph[u][v];
+				parent[v] = u;
 			}
 		}
 
@@ -105,6 +108,7 @@ class DijkstraAlgorithm extends PathFindingAlgorithmTemplate {
 					getConnection(nodes[u], nodes[v]).activate();
 					if (sptSet[v] == false && dist[v] > dist[u] + graph[u][v]) {
 						dist[v] = dist[u] + graph[u][v];
+						parent[v] = u;
 					}
 				}
 			}
