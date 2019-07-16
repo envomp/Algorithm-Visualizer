@@ -69,8 +69,8 @@ class Node extends SpriteComponent {
 
     if (visualWeightAfterPathFinding != null) {
       ParagraphBuilder paragraph = new ParagraphBuilder(new ParagraphStyle());
-      paragraph.pushStyle(new TextStyle(color: new Color(0xff000000), fontSize: min(max(8, 10 + weight.abs() / 6 - lesson.nodes / 10), nodeSize / 2)));
-      paragraph.addText(pow(2, 20) == visualWeightAfterPathFinding ? '∞' : visualWeightAfterPathFinding.floor().toString());
+	  paragraph.pushStyle(new TextStyle(color: new Color(0xff000000), fontSize: getFontSize()));
+	  paragraph.addText(pow(2, 20) <= visualWeightAfterPathFinding ? '∞' : visualWeightAfterPathFinding.floor().toString());
 	  Paragraph nodeWeightText = paragraph.build()
 		  ..layout(new ParagraphConstraints(width: 180.0));
 
@@ -78,9 +78,18 @@ class Node extends SpriteComponent {
     }
   }
 
-  @override
-  void update(double t) {
-    //this.angle += nodeSize / (PROPORTIONAL_ROTATION_RATE * DEGREE_TO_RADIAN);
+  double getFontSize() {
+	  return nodeSize / visualWeightAfterPathFinding
+		  .toString()
+		  .length - (visualWeightAfterPathFinding
+		  .toString()
+		  .length == 1 ? 10 : 0) + 2;
+
+	  // return min(
+	  // 	max(
+	  // 		8,
+	  // 		10 + weight.abs() / 6 - (visualWeightAfterPathFinding.toString().length - weight.toString().length) * 2)
+	  // 	, nodeSize / 2 - (visualWeightAfterPathFinding.toString().length - weight.toString().length) * 2 + nodeSize / 10);
   }
 
   void activate() {

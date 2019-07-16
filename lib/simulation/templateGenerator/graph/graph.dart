@@ -54,8 +54,8 @@ class Graph extends TemplateSimulationExecutor {
     } else {
       this.minWeight = 0;
     }
-    this.minNodeSize = 30 - lesson.nodes / 5;
-    this.maxNodeSize = 50 - lesson.nodes / 5;
+	this.minNodeSize = 35 - lesson.nodes / 5;
+	this.maxNodeSize = 55 - lesson.nodes / 5;
     this.proportionalMultiplier = 120 - lesson.nodes; // time to finish loading
     this.outgoingPathsPerNode = new List<int>.filled(lesson.nodes.ceil() + 1, 0, growable: false);
     this.incomingPathsPerNode = new List<int>.filled(lesson.nodes.ceil() + 1, 0, growable: false);
@@ -279,7 +279,7 @@ class Graph extends TemplateSimulationExecutor {
       for (var i = 0; i < nodes.length; i++) {
         var existing = nodes[i];
         double d = pythagoreanTheorem(node, existing);
-        if (d < 1.9 * (maxNodeSize - minNodeSize)) {
+		if (d < (existing.nodeSize + maxNodeSize) / 1.6) {
           overlapping = true;
           break;
         }
