@@ -2,7 +2,6 @@ import 'package:AlgorithmVisualizer/simulation/algorithms/pathfinding/pathfindin
 import 'package:AlgorithmVisualizer/simulation/templateGenerator/graph/node.dart';
 
 class BellmanFordAlgorithm extends PathFindingAlgorithmTemplate {
-  int i = 0;
   List<int> dist;
 
   BellmanFordAlgorithm(Node root, Node destination, List<Node> nodes, List<Path> paths) : super(root, destination, nodes, paths) {
@@ -14,24 +13,25 @@ class BellmanFordAlgorithm extends PathFindingAlgorithmTemplate {
   void allInOne() {
     // Step 1: Relax all edges |V| - 1 times. A simple shortest
     // path from src to any other vertex can have at-most |V| - 1 edges
-    for (int i = 0; i < V; i++) {
-      // Update dist value and parent index of the adjacent vertices of
-      // the picked vertex. Consider only those vertices which are still in queue
-      for (Path path in paths) {
-        path.rootNode.activate();
+
+	  // Update dist value and parent index of the adjacent vertices of
+	  // the picked vertex. Consider only those vertices which are still in queue
+	  nodes[i].activate();
+
+	  for (Path path in paths) {
+		  if (path.rootNode == nodes[i]) {
         path.activate();
+		  }
 
-        int u = nodes.indexOf(path.rootNode);
-        int v = nodes.indexOf(path.destinationNode);
+		  int u = nodes.indexOf(path.rootNode);
+		  int v = nodes.indexOf(path.destinationNode);
 
-        if (dist[u] != maxInt() && dist[u] + graph[u][v] < dist[v]) {
-          dist[v] = dist[u] + graph[u][v];
-        }
+		  if (dist[u] != maxInt() && dist[u] + graph[u][v] < dist[v]) {
+			  dist[v] = dist[u] + graph[u][v];
+		  }
 
-        if (dist[u] < 0) {
-          path.rootNode.activateNegativeCycle();
-          path.activateNegativeCycle();
-        }
+		  if (graph[u][v] < 0) {
+			  path.destinationNode.activateNegativeCycle();
       }
     }
 
@@ -46,7 +46,11 @@ class BellmanFordAlgorithm extends PathFindingAlgorithmTemplate {
     //     print('negative cycle'); //there will always be a negative cycle because of the base tree
     //   }
     // }
-    done = true;
+	  if (i == V - 1) {
+		  done = true;
+	  } else {
+		  i++;
+	  }
   }
 
   @override
@@ -55,16 +59,17 @@ class BellmanFordAlgorithm extends PathFindingAlgorithmTemplate {
     int u = nodes.indexOf(path.rootNode);
     int v = nodes.indexOf(path.destinationNode);
 
-    path.rootNode.activate();
-    path.activate();
+	nodes[(i / paths.length).floor()].activate();
+	if (path.rootNode == nodes[(i / paths.length).floor()]) {
+		path.activate();
+	}
 
     if (dist[u] != maxInt() && dist[u] + graph[u][v] < dist[v]) {
       dist[v] = dist[u] + graph[u][v];
     }
 
-    if (dist[u] < 0) {
-      path.rootNode.activateNegativeCycle();
-      path.activateNegativeCycle();
+	if (graph[u][v] < 0) {
+		path.destinationNode.activateNegativeCycle();
     }
 
     i++;

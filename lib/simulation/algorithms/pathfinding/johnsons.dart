@@ -12,7 +12,6 @@ class JohnsonsAlgorithm extends PathFindingAlgorithmTemplate {
   List<List<int>> copy;
   bool reWeightingDone = false;
   bool allOnce = false;
-  int i = 0;
 
   JohnsonsAlgorithm(Node root, Node destination, List<Node> nodes, List<Path> paths) : super(root, destination, nodes, paths) {
     q = new TempNode(100);
@@ -51,22 +50,26 @@ class JohnsonsAlgorithm extends PathFindingAlgorithmTemplate {
     allOnce = true;
     if (!bellmanFord.done) {
       bellmanFord.allInOne();
+	  bellmanFord.overRideNodeWeights();
       if (bellmanFord.done) {
         for (Path qPath in qPaths) {
           paths.remove(qPath);
         }
       }
     } else if (!done) {
-      Path path = paths[i];
-      int root = nodes.indexOf(path.rootNode);
-      int dest = nodes.indexOf(path.destinationNode);
-      graph[root][dest] += bellmanFord.dist[root] - bellmanFord.dist[dest];
-      if (i == paths.length - 1) {
-        done = true;
-        copy = new List.generate(graph.length, (i) => new List.from(graph[i]));
-        nodes.remove(q);
-      } else {
-        i++;
+		for (int c = 0; c < 1000; c++) {
+			Path path = paths[i];
+			int root = nodes.indexOf(path.rootNode);
+			int dest = nodes.indexOf(path.destinationNode);
+			graph[root][dest] += bellmanFord.dist[root] - bellmanFord.dist[dest];
+			if (i == paths.length - 1) {
+				done = true;
+				copy = new List.generate(graph.length, (i) => new List.from(graph[i]));
+				nodes.remove(q);
+				break;
+			} else {
+				i++;
+			}
       }
     }
   }
@@ -75,7 +78,6 @@ class JohnsonsAlgorithm extends PathFindingAlgorithmTemplate {
   void overRideNodeWeights() {
     if (root != null) {
       if (dijkstraAlgorithm == null) {
-        print('new djikstra');
         graph = new List.generate(copy.length, (i) => new List.from(copy[i]));
         dijkstraAlgorithm = new DijkstraAlgorithm(root, destination, nodes, paths);
         dijkstraAlgorithm.graph = graph;
@@ -126,6 +128,7 @@ class JohnsonsAlgorithm extends PathFindingAlgorithmTemplate {
   void step() {
     if (!bellmanFord.done) {
       bellmanFord.step();
+	  bellmanFord.overRideNodeWeights();
       if (bellmanFord.done) {
         for (Path qPath in qPaths) {
           paths.remove(qPath);

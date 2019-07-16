@@ -165,34 +165,30 @@ class Graph extends TemplateSimulationExecutor {
       case "Dijkstra's algorithm":
         if (checkRequirementsToAllNodes()) {
           executiveAlgorithm = DijkstraAlgorithm(root, destination, nodes, paths);
-          isHandleInput = false;
         }
         break;
       case "A-star algorithm":
         if (checkRequirementsFull()) {
 			executiveAlgorithm = AStarAlgorithm(root, destination, nodes, paths);
-          isHandleInput = false;
         }
         break;
       case "Bellman–Ford algorithm":
         if (checkRequirementsToAllNodes()) {
 			executiveAlgorithm = BellmanFordAlgorithm(root, destination, nodes, paths);
-          isHandleInput = false;
         }
         break;
       case "Floyd-Warshall algorithm":
 		  if (checkRequirements()) {
 			  executiveAlgorithm = FloydWarshallAlgorithm(root, destination, nodes, paths);
-			  isHandleInput = false;
 		  }
 		  break;
       case "Johnson's algorithm":
 		  if (checkRequirements()) {
 			  executiveAlgorithm = JohnsonsAlgorithm(root, destination, nodes, paths);
-			  isHandleInput = false;
 		  }
 		  break;
     }
+	isHandleInput = executiveAlgorithm == null;
   }
 
   bool checkRequirementsFull() => root != null && destination != null && nodes != null && paths != null;
@@ -218,6 +214,7 @@ class Graph extends TemplateSimulationExecutor {
 				  }
 			  }
 			  for (Path path in paths) {
+				  path.userOverrideSprite = false;
 				  path.activate();
 			  }
 		  } else {
@@ -263,11 +260,7 @@ class Graph extends TemplateSimulationExecutor {
 
   void nodeInitialization(double t, size) {
     if (nodes.length < lesson.nodes) {
-      if (askForInformation(lesson.additionalInformation, lesson.weightsOnNodes)) {
-        this.newNode(t, weightedNodeCreation, size);
-      } else {
-        this.newNode(t, nodeCreation, size);
-      }
+		this.newNode(t, askForInformation(lesson.additionalInformation, lesson.weightsOnNodes) ? weightedNodeCreation : nodeCreation, size);
     } else {
       state = States.drawConnections;
       elapsedTime = 0;
@@ -323,31 +316,20 @@ class Graph extends TemplateSimulationExecutor {
   ///////////////////////// PATH INITIALIZATION CODE ///////////////////////////
 
   void pathInitialization(double t) {
-	  int negativeNodes = 0;
-	  nodes.forEach((Node e) {
-		  if (e.weight < 0) {
-			  negativeNodes++;
-		  }
-	  });
+	  int negativeNodes = nodes
+		  .where((f) => f.weight < 0)
+		  .toList()
+		  .length;
 	  if (paths.length < min(lesson.edges.floor(), ((nodes.length * (nodes.length - 1)) / 2 - (negativeNodes * (negativeNodes - 1)) / 2)) * (askForInformation(lesson.simulationDetails, lesson.directed) ? 1 : 2)) {
       //every undirected path counts as 2
-      if (paths.length < (lesson.nodes.floor() - 1) * 2) {
-        if (askForInformation(lesson.additionalInformation, lesson.weightsOnEdges)) {
-          newPath(t, weightedPathCreation, treeGeneration);
-        } else {
-          newPath(t, pathCreation, treeGeneration);
-        }
-      } else {
-        if (askForInformation(lesson.additionalInformation, lesson.weightsOnEdges)) {
-          newPath(t, weightedPathCreation, graphGeneration);
-        } else {
-          newPath(t, pathCreation, graphGeneration);
-        }
+		  try {
+			  newPath(t, askForInformation(lesson.additionalInformation, lesson.weightsOnEdges) ? weightedPathCreation : pathCreation, (paths.length < (lesson.nodes.floor() - 1) * 2) ? treeGeneration : graphGeneration);
+		  } catch (Exception) {
+			  state = States.algorithm;
       }
     } else {
       state = States.algorithm;
-      root = null;
-      destination = null;
+	  destination = root = null;
       elapsedTime = 0;
     }
   }

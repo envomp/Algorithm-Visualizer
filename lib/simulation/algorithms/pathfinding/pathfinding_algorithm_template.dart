@@ -7,6 +7,7 @@ abstract class PathFindingAlgorithmTemplate {
 	Node destination;
   final List<Node> nodes;
   final List<Path> paths;
+	int i = 0;
 
   List<List<int>> graph;
 	int V;

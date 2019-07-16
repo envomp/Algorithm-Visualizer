@@ -6,7 +6,6 @@ import 'package:AlgorithmVisualizer/simulation/templateGenerator/graph/node.dart
 class FloydWarshallAlgorithm extends PathFindingAlgorithmTemplate {
   List<List<int>> nxt;
   List<List<int>> dist;
-  int K = 0;
 
   FloydWarshallAlgorithm(Node root, Node destination, List<Node> nodes, List<Path> paths) : super(root, destination, nodes, paths) {
     nxt = List<List<int>>.generate(V, (i) => List<int>.generate(V, (j) => 0));
@@ -30,53 +29,61 @@ class FloydWarshallAlgorithm extends PathFindingAlgorithmTemplate {
 
   @override
   void allInOne() {
-    nodes[K].activate();
-    for (int i = 0; i < V; i++) {
-      Path path = getConnection(nodes[K], nodes[i]);
+	  if (nodes[i].weight < 0) {
+		  nodes[i].activateNegativeCycle();
+	  } else {
+		  nodes[i].activate();
+	  }
+	  for (int k = 0; k < V; k++) {
+		  Path path = getConnection(nodes[i], nodes[k]);
       if (path != null) {
         path.activate();
       }
       for (int j = 0; j < V; j++) {
-        int tempSum = dist[i][K] + dist[K][j];
+		  int tempSum = dist[k][i] + dist[i][j];
 
-        if (dist[i][j] > tempSum) {
-          dist[i][j] = tempSum;
-          nxt[i][j] = nxt[i][K];
+		  if (dist[k][j] > tempSum) {
+			  dist[k][j] = tempSum;
+			  nxt[k][j] = nxt[k][i];
         }
       }
     }
 
-    if (K == pow(V, 1) - 1) {
+	  if (i == pow(V, 1) - 1) {
       done = true;
     } else {
-      K++;
+		  i++;
     }
   }
 
   @override
   void step() {
     for (int n = 0; n < 1000; n++) {
-      int k = (K / pow(V, 2)).floor() % V;
-      int i = (K / V).floor() % V;
-      int j = K % V;
+		int k = (i / pow(V, 2)).floor() % V;
+		int l = (i / V).floor() % V;
+		int m = i % V;
 
-      nodes[k].activate();
+		if (nodes[k].weight < 0) {
+			nodes[k].activateNegativeCycle();
+		} else {
+			nodes[k].activate();
+		}
 
-      Path path = getConnection(nodes[k], nodes[i]);
+		Path path = getConnection(nodes[k], nodes[l]);
       if (path != null) {
         path.activate();
       }
 
-      int tempSum = dist[i][k] + dist[k][j];
-      if (dist[i][j] > tempSum) {
-        dist[i][j] = tempSum;
-        nxt[i][j] = nxt[i][k];
+		int tempSum = dist[l][k] + dist[k][m];
+		if (dist[l][m] > tempSum) {
+			dist[l][m] = tempSum;
+			nxt[l][m] = nxt[l][k];
       }
 
-      if (K == pow(V, 3) - 1) {
+		if (i == pow(V, 3) - 1) {
         done = true;
       } else {
-        K++;
+			i++;
       }
     }
   }

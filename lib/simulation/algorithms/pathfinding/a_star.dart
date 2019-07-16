@@ -9,7 +9,6 @@ class AStarAlgorithm extends PathFindingAlgorithmTemplate {
   List<bool> sptSet;
   List<int> dist;
   List<int> parent;
-  int i = 0;
   int u;
 
   AStarAlgorithm(Node root, Node destination, List<Node> nodes, List<Path> paths) : super(root, destination, nodes, paths) {
@@ -22,34 +21,37 @@ class AStarAlgorithm extends PathFindingAlgorithmTemplate {
 
   @override
   void allInOne() {
-    for (int cout = 0; cout < V; cout++) {
-      // Pick the minimum distance vertex from
-      // the set of vertices not yet processed.
-      // u is always equal to src in first iteration
-      int u = minDistance();
-      if (nodes[u] == destination) {
-        done = true;
-        return;
-      }
-      nodes[u].activate();
-      // Put the minimum distance vertex in the
-      // shortest path tree
-      sptSet[u] = true;
-      // Update dist value of the adjacent vertices
-      // of the picked vertex only if the current
-      // distance is greater than new distance and
-      // the vertex in not in the shortest path tree
-      for (int v = 0; v < V; v++) {
-        if (graph[u][v] != null) {
-          getConnection(nodes[u], nodes[v]).activate();
-          if (sptSet[v] == false && dist[v] > dist[u] + graph[u][v]) {
-            dist[v] = dist[u] + graph[u][v];
-			parent[v] = u;
-          }
-        }
-      }
-    }
-    done = true;
+	  // Pick the minimum distance vertex from
+	  // the set of vertices not yet processed.
+	  // u is always equal to src in first iteration
+	  int u = minDistance();
+	  if (nodes[u] == destination) {
+		  done = true;
+		  return;
+	  }
+	  nodes[u].activate();
+	  // Put the minimum distance vertex in the
+	  // shortest path tree
+	  sptSet[u] = true;
+	  // Update dist value of the adjacent vertices
+	  // of the picked vertex only if the current
+	  // distance is greater than new distance and
+	  // the vertex in not in the shortest path tree
+	  for (int v = 0; v < V; v++) {
+		  if (graph[u][v] != null) {
+			  getConnection(nodes[u], nodes[v]).activate();
+			  if (sptSet[v] == false && dist[v] > dist[u] + graph[u][v]) {
+				  dist[v] = dist[u] + graph[u][v];
+				  parent[v] = u;
+			  }
+		  }
+	  }
+
+	  if (i == V - 1) {
+		  done = true;
+	  } else {
+		  i++;
+	  }
   }
 
   int heuristicFunction(int v) => dist[v] + heuristic[v]; //todo: add an actual heuristic function.. maybe..
