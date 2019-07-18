@@ -37,19 +37,23 @@ abstract class HomePage extends State<DetailPage> {
     final topContentText = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        SizedBox(height: 70.0),
+		  SizedBox(height: (MediaQuery
+			  .of(context)
+			  .size
+			  .width > MediaQuery
+			  .of(context)
+			  .size
+			  .height ? 0 : 40)),
         Container(
-          width: 90.0,
-          child: new Divider(color: Colors.green),
-        ),
-        SizedBox(height: 10.0),
-        Text(
-          lesson.title,
-          style: TextStyle(color: Colors.white, fontSize: 45.0),
+			alignment: Alignment.topCenter,
+			child: Text(
+				lesson.title,
+				style: TextStyle(color: Colors.white, fontSize: 45.0),
+			),
         ),
         SizedBox(height: 30.0),
         Row(
-          mainAxisAlignment: MainAxisAlignment.start,
+			mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
             Expanded(flex: 1, child: levelIndicator),
             Expanded(
@@ -66,26 +70,38 @@ abstract class HomePage extends State<DetailPage> {
       ],
     );
 
-    final double bottomTopRelation = 0.35;
     final topContent = Stack(
       children: <Widget>[
         Container(
-          height: MediaQuery.of(context).size.height * bottomTopRelation,
-          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+			//height: (MediaQuery.of(context).size.width > MediaQuery.of(context).size.height ? 250 : 300),
+			padding: EdgeInsets.symmetric(vertical: 40, horizontal: 10.0 * (MediaQuery
+				.of(context)
+				.size
+				.width > MediaQuery
+				.of(context)
+				.size
+				.height ? 10.0 : 3.2)),
           width: MediaQuery.of(context).size.width,
+			alignment: Alignment.center,
           decoration: BoxDecoration(color: Color.fromRGBO(58, 66, 86, .9)),
-          child: Center(
-            child: topContentText,
-          ),
+			child: topContentText
         ),
         Positioned(
           left: 8.0,
-          top: 60.0,
-          child: InkWell(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: Icon(Icons.arrow_back, color: Colors.white),
+			top: 30.0,
+			child: Column(
+				children: <Widget>[
+					InkWell(
+						onTap: () {
+							Navigator.pop(context);
+						},
+						child: Icon(Icons.arrow_back, color: Colors.white),
+					),
+					Container(
+						width: 90.0,
+						child: new Divider(color: Colors.green),
+					),
+				],
           ),
         )
       ],

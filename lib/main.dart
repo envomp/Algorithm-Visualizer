@@ -37,7 +37,7 @@ class ListPage extends StatefulWidget {
   _ListPageState createState() => _ListPageState(controllers);
 }
 
-class _ListPageState extends State<ListPage> {
+class _ListPageState extends State<ListPage> with TickerProviderStateMixin {
   final Controllers _controllers;
   int activePage = 0;
 
@@ -74,6 +74,13 @@ class _ListPageState extends State<ListPage> {
           ),
 		trailing: Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
           onTap: () {
+			  lesson.screenSize = MediaQuery
+				  .of(context)
+				  .size
+				  .width * MediaQuery
+				  .of(context)
+				  .size
+				  .height;
 			  Navigator.push(context, MaterialPageRoute(builder: (context) => DetailPage(lesson, _controllers)));
           },
         );
@@ -87,6 +94,8 @@ class _ListPageState extends State<ListPage> {
           ),
         );
 
+	final List<AnimationController> appBarIconAnimationController = new List<AnimationController>.generate(1, (int index) => AnimationController(vsync: this, duration: new Duration(seconds: 1)));
+
     final makeBody = Container(
         decoration: BoxDecoration(color: Color.fromRGBO(58, 66, 86, 1.0)),
         child: PageView(
@@ -96,7 +105,9 @@ class _ListPageState extends State<ListPage> {
           scrollDirection: Axis.horizontal,
           onPageChanged: (int newPage) {
             setState(() {
-              activePage = newPage;
+				setState(() {
+					activePage = newPage;
+				});
             });
           },
           children: createChildren(makeCard),
@@ -109,32 +120,47 @@ class _ListPageState extends State<ListPage> {
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
           shrinkWrap: true,
-          itemCount: AlgorithmType.values.length,
+			itemCount: AlgorithmTypes.values.length,
           itemBuilder: (BuildContext context, int index) {
             return IconButton(
-				icon: Icon(AlgorithmIcon.getAlgorithmIcon(AlgorithmType.values[index]), color: activePage == index ? Colors.green : Colors.white),
+				icon: Icon(
+					AlgorithmTypes.values[index].getIcon(),
+					color: activePage == index ? Colors.green : Colors.white,
+					semanticLabel: 'Show menu',
+				),
               onPressed: () {
-                setState(() {
-                  activePage = index;
-                  _controllers.pageController.jumpToPage(index);
-                });
+				  if (activePage != index) {
+					  setState(() {
+						  activePage = index;
+					  });
+				  }
+				  _controllers.pageController.animateToPage(activePage, duration: Duration(seconds: 1), curve: Curves.ease);
+				  //toggleIcon(activePage + _controllers.iconAnimationControllerPositionShift);
               },
             );
           },
         ),
       ),
     );
+
     final topAppBar = AppBar(
       elevation: 0.1,
       backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
-      title: Text(AlgorithmToString.getAlgorithmToString(activePage)),
+		title: Text(AlgorithmTypes.values[activePage].getAlgorithmToString()),
       actions: <Widget>[
         IconButton(
 			icon: AnimatedIcon(
-				icon: AnimatedIcon.play_pause,
-				progress: null,
+				icon: AnimatedIcons.menu_close,
+				semanticLabel: 'Show menu',
+				progress: appBarIconAnimationController[0],
 			),
-          onPressed: () {},
+			onPressed: () {
+				if (appBarIconAnimationController[0].isAnimating || appBarIconAnimationController[0].isCompleted) {
+					appBarIconAnimationController[0].reverse();
+				} else {
+					appBarIconAnimationController[0].forward();
+				}
+			},
         ),
       ],
     );
@@ -149,7 +175,7 @@ class _ListPageState extends State<ListPage> {
 
   List<Widget> createChildren(Card makeCard(Lesson lesson)) {
     List<Widget> widgets = [];
-    for (int i = 0; i < AlgorithmType.values.length; i++) {
+	for (int i = 0; i < AlgorithmTypes.values.length; i++) {
       widgets.add(buildListView(makeCard, i));
     }
     return widgets;
@@ -159,7 +185,7 @@ class _ListPageState extends State<ListPage> {
     List<Lesson> listLessons = getLessons();
     listLessons.sort((a, b) => a.getSortingOrder().compareTo(b.getSortingOrder()));
     if (index != 0) {
-		listLessons = listLessons.where((f) => f.algorithmType == AlgorithmType.values[index]).toList();
+		listLessons = listLessons.where((f) => f.algorithmType == AlgorithmTypes.values[index]).toList();
     }
     return ListView.builder(
       scrollDirection: Axis.vertical,
@@ -184,7 +210,7 @@ List<Lesson> getLessons() => [
           simulationDetails: 7,
           additionalInformation: 3,
           algorithmTemplate: AlgorithmTemplate.graph,
-          algorithmType: AlgorithmType.pathFinding,
+		  algorithmType: AlgorithmTypes.pathFinding,
           content:
 		  "Dijkstra's algorithm is an algorithm for finding the shortest paths between nodes in a graph, which may represent, for example, road networks. The algorithm exists in many variants; Dijkstra's original variant found the "
               "shortest path between two nodes, but a more common variant fixes a single node as the 'source' node and finds shortest paths from the source to all other nodes in the graph, producing a shortest-path tree."),
@@ -199,7 +225,7 @@ List<Lesson> getLessons() => [
           simulationDetails: 7,
           additionalInformation: 3,
           algorithmTemplate: AlgorithmTemplate.graph,
-          algorithmType: AlgorithmType.pathFinding,
+		  algorithmType: AlgorithmTypes.pathFinding,
           content:
 		  "A* is just like Dijkstra, the only difference is that A* tries to look for a better path by using a heuristic function which gives priority to nodes that are supposed to be better than others while Dijkstra's just explore "
               "all possible paths. A* is faster than using dijkstra and uses best-first-search to speed things up. A* is basically an informed variation of Dijkstra. "),
@@ -214,7 +240,7 @@ List<Lesson> getLessons() => [
           simulationDetails: 7,
           additionalInformation: 11,
           algorithmTemplate: AlgorithmTemplate.graph,
-          algorithmType: AlgorithmType.pathFinding,
+		  algorithmType: AlgorithmTypes.pathFinding,
           content:
 		  "The Bellman–Ford algorithm is an algorithm that computes shortest paths from a single source vertex to all of the other vertices in a weighted digraph. It is slower than Dijkstra's algorithm for the same problem, but more "
               "versatile, as it is capable of handling graphs in which some of the edge weights are negative numbers.Bellman-Ford works better (better than Dijksra’s) for distributed systems. Unlike Dijksra’s where we need to find minimum "
@@ -230,7 +256,7 @@ List<Lesson> getLessons() => [
           usages: "Maximum Bandwidth Paths in Flow Networks.\nInversion of real matrices.\nFast computation of Pathfinder networks\nArbitrage",
           simulationDetails: 7,
           algorithmTemplate: AlgorithmTemplate.graph,
-          algorithmType: AlgorithmType.pathFinding,
+		  algorithmType: AlgorithmTypes.pathFinding,
           content:
 		  "Floyd–Warshall algorithm is an algorithm for finding shortest paths in a weighted graph with positive or negative edge weights (but with no negative cycles).A single execution of the algorithm will find the lengths (summed"
               " weights) of shortest paths between all pairs of vertices. Although it does not return details of the paths themselves, it is possible to reconstruct the paths with simple modifications to the algorithm. "
@@ -247,7 +273,7 @@ List<Lesson> getLessons() => [
           simulationDetails: 7,
           additionalInformation: 11,
           algorithmTemplate: AlgorithmTemplate.graph,
-          algorithmType: AlgorithmType.pathFinding,
+		  algorithmType: AlgorithmTypes.pathFinding,
           content:
 		  "Johnson's algorithm is a way to find the shortest paths between all pairs of vertices in a edge-weighted, directed graph. It allows some of the edge weights to be negative numbers, but no negative-weight cycles may exist. "
 			  "First, a new node q is added to the graph, connected by zero-weight edges to each of the other nodes.Second, the Bellman–Ford algorithm is used, starting from the new vertex q, to find for each vertex v the minimum weight "
@@ -266,7 +292,7 @@ List<Lesson> getLessons() => [
           simulationDetails: 0,
           additionalInformation: 0,
           algorithmTemplate: AlgorithmTemplate.maze,
-          algorithmType: AlgorithmType.pathFinding,
+		  algorithmType: AlgorithmTypes.pathFinding,
           content:
 		  "Flood fill, also called seed fill, is an algorithm that determines the area connected to a given node in a multi-dimensional array. It is used in the 'bucket' fill tool of paint programs to fill connected, similarly-colored "
               "areas with a different color, and in games such as Go and Minesweeper for determining which pieces are cleared."),
@@ -281,7 +307,7 @@ List<Lesson> getLessons() => [
           simulationDetails: 6,
           additionalInformation: 0,
           algorithmTemplate: AlgorithmTemplate.graph,
-          algorithmType: AlgorithmType.proofOfConcept,
+		  algorithmType: AlgorithmTypes.proofOfConcept,
           content:
 		  "In mathematics, the four color theorem states that, given any separation of a plane into contiguous regions, producing a figure called a map, no more than four colors are required to color the regions of the map so that no "
               "two adjacent regions have the same color.")

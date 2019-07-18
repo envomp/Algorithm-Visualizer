@@ -86,7 +86,7 @@ class GraphHomePage extends HomePage {
                     activeColor: Colors.green,
                     min: 2.0,
                     max: 100.0,
-                    divisions: 98,
+					  divisions: 1000,
                     onChanged: (value) {
                       setState(() => lesson.nodes = value);
                       minMaxEdges();

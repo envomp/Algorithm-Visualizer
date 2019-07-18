@@ -1,37 +1,27 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-enum AlgorithmType { all, pathFinding, proofOfConcept }
+class AlgorithmTypes {
+	final IconData _animatedIconData;
+	final String _algorithmToString;
 
-class AlgorithmIcon {
-  static IconData getAlgorithmIcon(AlgorithmType algo) {
-    switch (algo) {
-      case AlgorithmType.all:
-        return Icons.all_inclusive;
-      case AlgorithmType.pathFinding:
-        return Icons.gps_fixed;
-      case AlgorithmType.proofOfConcept:
-        return Icons.work;
-    }
-    return Icons.add;
-  }
+	const AlgorithmTypes._internal(this._animatedIconData, this._algorithmToString);
+
+	IconData getIcon() {
+		return _animatedIconData;
+	}
+
+	String getAlgorithmToString() {
+		return _algorithmToString;
+	}
+
+	static const all = const AlgorithmTypes._internal(Icons.all_inclusive, 'All algorithms');
+	static const pathFinding = const AlgorithmTypes._internal(Icons.grain, 'Pathfinding algorithms');
+	static const proofOfConcept = const AlgorithmTypes._internal(Icons.wb_incandescent, 'Proof of concept algorithms');
+
+	static const values = [all, pathFinding, proofOfConcept];
 }
 
-class AlgorithmToString {
-  static String getAlgorithmToString(int algo) {
-    switch (algo) {
-      case 0:
-        return 'All algorithms';
-      case 1:
-        return 'Pathfinding algorithms';
-        break;
-      case 2:
-        return 'Proof of concept algorithms';
-        break;
-    }
-    return 'Hi mom!';
-  }
-}
 
 enum AlgorithmTemplate { graph, maze }
 
@@ -59,10 +49,11 @@ class Lesson {
   Icon icon;
   String usages;
   String content;
-  AlgorithmType algorithmType;
+  AlgorithmTypes algorithmType;
   AlgorithmTemplate algorithmTemplate;
   String stateDescription = '';
   Function setState;
+  double screenSize = 300000;
 
   double nodes = 2.0;
   double edges = 1.0;

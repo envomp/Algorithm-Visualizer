@@ -74,7 +74,7 @@ class Game extends State<GameWrapper> {
                     activeColor: Colors.green,
                     min: 0.0,
                     max: 10.0,
-                    divisions: 100,
+					  divisions: 1000,
                     onChanged: (value) {
 						setState(() => simulation.abstractSimulationExecutor.speedFactor = value.floor());
                     },

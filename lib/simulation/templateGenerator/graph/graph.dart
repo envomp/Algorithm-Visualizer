@@ -54,8 +54,8 @@ class Graph extends TemplateSimulationExecutor {
     } else {
       this.minWeight = 0;
     }
-	this.minNodeSize = 35 - lesson.nodes / 5;
-	this.maxNodeSize = 55 - lesson.nodes / 5;
+	this.minNodeSize = max((38 - lesson.nodes / 5) * min(pow(lesson.screenSize / 300000, 0.5), 2), 28 - lesson.nodes / 5);
+	this.maxNodeSize = max((48 - lesson.nodes / 5) * min(pow(lesson.screenSize / 300000, 0.5), 2), 38 - lesson.nodes / 5);
     this.proportionalMultiplier = 120 - lesson.nodes; // time to finish loading
     this.outgoingPathsPerNode = new List<int>.filled(lesson.nodes.ceil() + 1, 0, growable: false);
     this.incomingPathsPerNode = new List<int>.filled(lesson.nodes.ceil() + 1, 0, growable: false);
@@ -91,16 +91,16 @@ class Graph extends TemplateSimulationExecutor {
 			break;
         case States.algorithm:
           switch (lesson.algorithmType) {
-            case AlgorithmType.pathFinding:
+			  case AlgorithmTypes.pathFinding:
               pathFindingSimulationStates();
               break;
-            case AlgorithmType.proofOfConcept:
+			  case AlgorithmTypes.proofOfConcept:
               switch (lesson.title) {
                 case "Four color theorem":
                   break;
               }
               break;
-            case AlgorithmType.all:
+			  case AlgorithmTypes.all:
               //it should never get here
               break;
           }
