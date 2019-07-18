@@ -130,7 +130,10 @@ class _ListPageState extends State<ListPage> {
       title: Text(AlgorithmToString.getAlgorithmToString(activePage)),
       actions: <Widget>[
         IconButton(
-          icon: Icon(Icons.list),
+			icon: AnimatedIcon(
+				icon: AnimatedIcon.play_pause,
+				progress: null,
+			),
           onPressed: () {},
         ),
       ],

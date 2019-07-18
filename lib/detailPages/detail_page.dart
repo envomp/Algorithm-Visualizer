@@ -8,9 +8,7 @@ import 'package:AlgorithmVisualizer/simulation/simulation_state.dart';
 import 'package:flutter/material.dart';
 
 part 'empty_detail_page.dart';
-
 part 'graph_detail_page.dart';
-
 part 'maze_detail_page.dart';
 
 abstract class HomePage extends State<DetailPage> {
