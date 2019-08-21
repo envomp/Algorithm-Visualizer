@@ -42,15 +42,15 @@ class Lesson {
   final int stepByStep = 16;
 
   final String title;
-  String level;
-  double indicatorValue;
-  String complexity;
-  String complexityDetails;
-  Icon icon;
-  String usages;
-  String content;
-  AlgorithmTypes algorithmType;
-  AlgorithmTemplate algorithmTemplate;
+  final String level;
+  final double indicatorValue;
+  final String complexity;
+  final String complexityDetails;
+  final Icon icon;
+  final String usages;
+  final String content;
+  final AlgorithmTypes algorithmType;
+  final AlgorithmTemplate algorithmTemplate;
   String stateDescription = '';
   Function setState;
   double screenSize = 300000;

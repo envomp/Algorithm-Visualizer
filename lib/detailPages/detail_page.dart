@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:AlgorithmVisualizer/controllers/Controllers.dart';
+import 'package:AlgorithmVisualizer/detailPages/show_up_text.dart';
 import 'package:AlgorithmVisualizer/formulas/formulas.dart';
 import 'package:AlgorithmVisualizer/model/lesson.dart';
 import 'package:AlgorithmVisualizer/simulation/simulation_algorithm.dart';
@@ -81,11 +82,13 @@ abstract class HomePage extends State<DetailPage> {
 				.of(context)
 				.size
 				.height ? 10.0 : 3.2)),
-          width: MediaQuery.of(context).size.width,
+			width: MediaQuery
+				.of(context)
+				.size
+				.width,
 			alignment: Alignment.center,
-          decoration: BoxDecoration(color: Color.fromRGBO(58, 66, 86, .9)),
-			child: topContentText
-        ),
+			decoration: BoxDecoration(color: Color.fromRGBO(58, 66, 86, .9)),
+			child: topContentText),
         Positioned(
           left: 8.0,
 			top: 30.0,
@@ -133,10 +136,34 @@ abstract class HomePage extends State<DetailPage> {
         ));
   }
 
-  Text getBottomContentText() {
-	  return Text(
-		  "Complexity description:\n\n" + lesson.complexityDetails + "\n\n\nIntroduction:\n\n" + lesson.content + "\n\n\nApplications and generalizations:\n\n" + lesson.usages,
-		  style: TextStyle(fontSize: 18.0),
+  Column getBottomContentText() {
+	  int delayAmount = 200;
+	  return Column(
+		  mainAxisAlignment: MainAxisAlignment.start,
+		  crossAxisAlignment: CrossAxisAlignment.start,
+		  children: <Widget>[
+			  ShowUp(
+				  child: Text(
+					  "Complexity description:\n\n" + lesson.complexityDetails,
+					  style: TextStyle(fontSize: 18.0),
+				  ),
+				  delay: delayAmount,
+			  ),
+			  ShowUp(
+				  child: Text(
+					  "\n\n\nIntroduction:\n\n" + lesson.content,
+					  style: TextStyle(fontSize: 18.0),
+				  ),
+				  delay: delayAmount + 200,
+			  ),
+			  ShowUp(
+				  child: Text(
+					  "\n\n\nApplications and generalizations:\n\n" + lesson.usages,
+					  style: TextStyle(fontSize: 18.0),
+				  ),
+				  delay: delayAmount + 400,
+			  ),
+		  ],
     );
   }
 

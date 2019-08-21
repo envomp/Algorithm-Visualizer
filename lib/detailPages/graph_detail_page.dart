@@ -251,26 +251,57 @@ class GraphHomePage extends HomePage {
 
   @override
   Container bottomContent() {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      padding: EdgeInsets.all(30.0),
-      child: Center(
-        child: Column(
-          children: <Widget>[
-            getBottomContentText(),
-            getWeightedNodeSwitch(context),
-            getWeightedEdgesSwitch(context),
-            getWeightedNotification(context),
-            getDirectedSwitch(context),
-            getNumberOfNodesText(context),
-            getNumberOfNodesSlider(context),
-            getNumberOfEdgesText(context),
-            getNumberOfEdgesSlider(context),
-            getSimulationStepSwitch(context),
-            getStartButton(context)
-          ],
-        ),
-      ),
-    );
+	  int delayAmount = 600;
+	  return Container(
+		  width: MediaQuery.of(context).size.width,
+		  padding: EdgeInsets.all(30.0),
+		  child: Center(
+			  child: Column(
+				  children: <Widget>[
+					  getBottomContentText(), // 600 delay goes here
+					  ShowUp(
+						  child: getWeightedNodeSwitch(context),
+						  delay: delayAmount + 50,
+					  ),
+					  ShowUp(
+						  child: getWeightedEdgesSwitch(context),
+						  delay: delayAmount + 100,
+					  ),
+					  ShowUp(
+						  child: getWeightedNotification(context),
+						  delay: delayAmount + 150,
+					  ),
+					  ShowUp(
+						  child: getDirectedSwitch(context),
+						  delay: delayAmount + 200,
+					  ),
+					  ShowUp(
+						  child: getNumberOfNodesText(context),
+						  delay: delayAmount + 250,
+					  ),
+					  ShowUp(
+						  child: getNumberOfNodesSlider(context),
+						  delay: delayAmount + 300,
+					  ),
+					  ShowUp(
+						  child: getNumberOfEdgesText(context),
+						  delay: delayAmount + 350,
+					  ),
+					  ShowUp(
+						  child: getNumberOfEdgesSlider(context),
+						  delay: delayAmount + 400,
+					  ),
+					  ShowUp(
+						  child: getSimulationStepSwitch(context),
+						  delay: delayAmount + 450,
+					  ),
+					  ShowUp(
+						  child: getStartButton(context),
+						  delay: delayAmount + 500,
+					  ),
+				  ],
+			  ),
+		  ),
+	  );
   }
 }

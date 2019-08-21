@@ -270,27 +270,29 @@ class Graph extends TemplateSimulationExecutor {
   void newNode(double t, creationMethod, Size size) {
     // creates a new node with no overlap
     elapsedTime += t;
-	int counter = 10;
-	while (counter > 0) {
-      Node node = creationMethod(size);
-      bool overlapping = false;
-      // check that it is not overlapping with any existing circle
-      // another brute force approach
-      for (var i = 0; i < nodes.length; i++) {
-        var existing = nodes[i];
-        double d = pythagoreanTheorem(node, existing);
-		if (d < (existing.nodeSize + maxNodeSize) / 1.6) {
-          overlapping = true;
-          break;
-        }
-      }
-      // add valid circles to array
-      if (!overlapping) {
-        node.initNode(lesson);
-        nodes.add(node);
-        break;
-      }
-	  counter--;
+	if (elapsedTime > 1) {
+		int counter = 10;
+		while (counter > 0) {
+			Node node = creationMethod(size);
+			bool overlapping = false;
+			// check that it is not overlapping with any existing circle
+			// another brute force approach
+			for (var i = 0; i < nodes.length; i++) {
+				var existing = nodes[i];
+				double d = pythagoreanTheorem(node, existing);
+				if (d < (existing.nodeSize + maxNodeSize) / 1.6) {
+					overlapping = true;
+					break;
+				}
+			}
+			// add valid circles to array
+			if (!overlapping) {
+				node.initNode(lesson);
+				nodes.add(node);
+				break;
+			}
+			counter--;
+		}
     }
   }
 
@@ -309,7 +311,7 @@ class Graph extends TemplateSimulationExecutor {
     return new Node.weighted(generateXCoordinate(maxNodeSize, size), generateYCoordinate(maxNodeSize, size), (weight.abs() / maxWeight * (maxNodeSize - minNodeSize) + minNodeSize), weight.floor());
   }
 
-  double generateYCoordinate(nodeSize, size) => min(size.height, (elapsedTime / lesson.nodes * proportionalMultiplier) * rnd.nextDouble() * size.height);
+  double generateYCoordinate(nodeSize, size) => min(size.height, ((elapsedTime - 0.5) / lesson.nodes * proportionalMultiplier) * rnd.nextDouble() * size.height);
 
   double generateXCoordinate(nodeSize, size) => rnd.nextDouble() * size.width;
 

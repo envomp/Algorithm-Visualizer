@@ -5,9 +5,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-class Game extends State<GameWrapper> {
+class Game extends State<GameWrapper> with TickerProviderStateMixin {
   final SimulationAlgorithm simulation;
   final Controllers _controllers;
+  AnimationController animationController;
+  Animation<double> animation;
 
   Game(this.simulation, this._controllers) {
     Flame.util.addGestureRecognizer(_controllers.gestureController
@@ -21,10 +23,31 @@ class Game extends State<GameWrapper> {
   }
 
   @override
+  void initState() {
+	  super.initState();
+
+	  animationController = AnimationController(
+		  vsync: this,
+		  duration: Duration(seconds: 1),
+	  )
+		  ..addListener(() => setState(() {}));
+
+	  animation = Tween<double>(
+		  begin: 0.0,
+		  end: 1.0,
+	  ).animate(animationController);
+
+	  animationController.forward();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: buildListView(context),
+		  child: FadeTransition(
+			  opacity: animation,
+			  child: buildListView(context),
+		  ),
       ),
     );
   }
